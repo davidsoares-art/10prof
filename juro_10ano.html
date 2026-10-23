@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<title>Aplicações Financeiras</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+/* ── Reset & Base ── */
+*, *::before, *::after { box-sizing: border-box; }
+body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #eef0f4; padding: 16px; margin: 0; }
+.page { max-width: 980px; margin: 0 auto; display: flex; flex-direction: column; gap: 28px; }
+
+/* ── Intro ── */
+.intro-box { background: linear-gradient(135deg, #1a252f, #2c3e50); color: white; border-radius: 14px; padding: 28px 32px; }
+.intro-box h1 { margin: 0 0 8px; font-size: 22px; letter-spacing: .5px; }
+.intro-box .subtitulo { font-size: 14px; opacity: .75; margin: 0 0 22px; }
+.zonas-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.zona-card { border-radius: 10px; padding: 14px 16px; }
+.zona-card .icon { font-size: 22px; margin-bottom: 6px; }
+.zona-card h3 { margin: 0 0 5px; font-size: 14px; }
+.zona-card p  { margin: 0; font-size: 12px; opacity: .85; line-height: 1.5; }
+.zc1 { background: rgba(52,152,219,.25); border: 1px solid rgba(52,152,219,.5); }
+.zc2 { background: rgba(142,68,173,.25); border: 1px solid rgba(142,68,173,.5); }
+.zc3 { background: rgba(211,84,0,.25);   border: 1px solid rgba(211,84,0,.5); }
+
+/* ── Zona wrapper ── */
+.zona { background: white; border-radius: 14px; overflow: hidden; box-shadow: 0 3px 12px rgba(0,0,0,.08); }
+.zona-header { display: flex; align-items: center; gap: 12px; padding: 16px 24px; }
+.zona-header .num { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 16px; flex-shrink: 0; }
+.zona-header h2 { margin: 0; font-size: 18px; }
+.zona-header p  { margin: 4px 0 0; font-size: 13px; opacity: .8; }
+.zona-body { padding: 20px 24px 24px; }
+
+.z1 .zona-header { background: #eaf4fd; }
+.z1 .zona-header .num { background: #2980b9; color: white; }
+.z1 .zona-header h2 { color: #1a5276; }
+
+.z2 .zona-header { background: #f5eeff; }
+.z2 .zona-header .num { background: #8e44ad; color: white; }
+.z2 .zona-header h2 { color: #6c3483; }
+
+.z3 .zona-header { background: #fef3eb; }
+.z3 .zona-header .num { background: #d35400; color: white; }
+.z3 .zona-header h2 { color: #a04000; }
+
+/* ── Simulador ── */
+.sim-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 14px; }
+.inputs-section { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.form-group { display: flex; flex-direction: column; }
+.form-group.full-width { grid-column: span 2; }
+label { font-size: 13px; font-weight: bold; margin-bottom: 4px; color: #34495e; }
+input[type=number], select { padding: 8px; border: 1px solid #ccc; border-radius: 6px; font-size: 13px; }
+.derived-section { background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 8px; padding: 15px; display: flex; flex-direction: column; justify-content: center; gap: 12px; }
+.derived-section h4 { margin: 0 0 5px; color: #7f8c8d; font-size: 12px; text-transform: uppercase; letter-spacing: .5px; }
+.derived-card { background: white; border-left: 4px solid #2980b9; padding: 10px 12px; border-radius: 4px; }
+.derived-card .title { font-size: 12px; color: #555; }
+.derived-card .value { font-size: 18px; font-weight: bold; color: #2c3e50; margin-top: 2px; }
+.btn-calc { width: 100%; padding: 10px; background: #27ae60; color: white; font-weight: bold; border: none; border-radius: 6px; cursor: pointer; font-size: 15px; margin-bottom: 14px; }
+.btn-calc:hover { background: #219150; }
+.results { display: flex; justify-content: space-around; font-size: 16px; font-weight: bold; background: #eef8f2; padding: 12px; border-radius: 6px; margin: 12px 0; }
+table.sim-table { width: 100%; border-collapse: collapse; margin-top: 18px; font-size: 13px; }
+table.sim-table th, table.sim-table td { border: 1px solid #ddd; padding: 6px 10px; text-align: center; }
+table.sim-table th { background: #2c3e50; color: white; }
+
+/* ── Exploração ── */
+.aviso-exp { background: #f5eeff; border-left: 4px solid #8e44ad; padding: 10px 14px; border-radius: 6px; font-size: 13px; color: #4a235a; margin-bottom: 20px; }
+.missao { border: 2px solid #d7bdf7; border-radius: 10px; padding: 20px 22px; margin-bottom: 22px; }
+.missao h3 { margin: 0 0 10px; color: #6c3483; font-size: 16px; }
+.missao .config { background: #f3eaff; border-left: 4px solid #8e44ad; padding: 9px 13px; border-radius: 4px; font-size: 13px; color: #4a235a; margin-bottom: 14px; line-height: 1.6; }
+.fill-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 14px; }
+.fill-table th { background: #6c3483; color: white; padding: 8px 10px; }
+.fill-table td { border: 1px solid #d7bdf7; padding: 7px 10px; background: white; }
+.fill-table td.fixed { background: #f3eaff; font-weight: bold; color: #4a235a; }
+.pergunta { margin-bottom: 14px; }
+.pergunta p { font-size: 14px; color: #2c3e50; margin: 0 0 7px; line-height: 1.5; }
+.pnum { font-weight: bold; color: #8e44ad; }
+.resp-num { width: 110px; padding: 6px 9px; border: 2px solid #b39ddb; border-radius: 6px; font-size: 14px; text-align: center; }
+.resp-num:focus { outline: none; border-color: #8e44ad; }
+.opcoes { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 6px; }
+.opcoes input[type=radio] { display: none; }
+.opcoes label { cursor: pointer; padding: 7px 14px; border: 2px solid #b39ddb; border-radius: 20px; font-size: 13px; color: #4a235a; background: white; user-select: none; transition: all .15s; }
+.opcoes label:hover { background: #f3eaff; }
+.opcoes input[type=radio]:checked + label { background: #8e44ad; color: white; border-color: #6c3483; }
+.btn-ver { margin-top: 12px; padding: 9px 22px; background: #8e44ad; color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; }
+.btn-ver:hover { background: #6c3483; }
+.feedback { display: none; margin-top: 11px; padding: 11px 15px; border-radius: 8px; font-size: 13px; line-height: 1.6; }
+.feedback.ok   { background: #eaf7ee; border-left: 4px solid #27ae60; color: #1a5e34; display: block; }
+.feedback.erro { background: #fdf3f2; border-left: 4px solid #e74c3c; color: #78281f; display: block; }
+
+/* Progresso exploração */
+.progresso-wrap { margin-bottom: 18px; }
+.progresso-texto { font-size: 13px; color: #6c3483; font-weight: bold; margin-bottom: 4px; }
+.progresso-barra-bg { background: #e8daef; border-radius: 20px; height: 16px; overflow: hidden; }
+.progresso-barra    { background: #8e44ad; height: 100%; border-radius: 20px; width: 0%; transition: width .4s; }
+
+/* ── Avaliação ── */
+.aviso-aval { display: flex; gap: 14px; align-items: flex-start; background: #fef3eb; border: 2px solid #d35400; border-radius: 10px; padding: 14px 18px; margin-bottom: 22px; font-size: 14px; color: #6e2c00; line-height: 1.6; }
+.aviso-aval .icon { font-size: 28px; flex-shrink: 0; }
+.aval-q { margin-bottom: 20px; padding: 16px 18px; background: #fef9f5; border: 1px solid #f0c8a0; border-radius: 8px; }
+.aval-q p { font-size: 14px; color: #2c3e50; margin: 0 0 10px; line-height: 1.5; font-weight: 500; }
+.aval-qnum { display: inline-block; background: #d35400; color: white; font-weight: bold; font-size: 12px; padding: 2px 8px; border-radius: 4px; margin-right: 6px; }
+.aval-opt input[type=radio] { display: none; }
+.aval-opt label { display: block; cursor: pointer; padding: 8px 13px; border: 1.5px solid #d4a77a; border-radius: 8px; font-size: 13px; color: #4a235a; background: white; margin-bottom: 6px; user-select: none; transition: all .15s; }
+.aval-opt label:hover { background: #fef3eb; }
+.aval-opt input[type=radio]:checked + label { background: #d35400; color: white; border-color: #a04000; }
+.aval-opt.locked label { pointer-events: none; }
+.aval-num-wrap { display: flex; align-items: center; gap: 10px; }
+.resp-aval { width: 120px; padding: 7px 10px; border: 2px solid #d4a77a; border-radius: 6px; font-size: 14px; text-align: center; }
+.resp-aval:focus { outline: none; border-color: #d35400; }
+.resp-aval:disabled { background: #f5f5f5; color: #555; }
+.btn-submeter { width: 100%; padding: 13px; background: #d35400; color: white; font-weight: bold; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; margin-top: 10px; letter-spacing: .5px; }
+.btn-submeter:hover:not(:disabled) { background: #a04000; }
+.btn-submeter:disabled { background: #aaa; cursor: not-allowed; }
+
+/* Resultado avaliação */
+.resultado-aval { display: none; margin-top: 22px; border-radius: 12px; overflow: hidden; }
+.resultado-header { padding: 20px 24px; text-align: center; }
+.resultado-header h2 { margin: 0 0 6px; font-size: 22px; }
+.resultado-header .nota { font-size: 42px; font-weight: bold; }
+.resultado-header p { margin: 4px 0 0; font-size: 14px; opacity: .85; }
+.res-verde { background: linear-gradient(135deg, #1a5276, #27ae60); color: white; }
+.res-amarelo { background: linear-gradient(135deg, #7d6608, #f39c12); color: white; }
+.res-vermelho { background: linear-gradient(135deg, #78281f, #c0392b); color: white; }
+.codigo-aval { font-size: 28px; font-weight: bold; letter-spacing: 5px; background: rgba(255,255,255,.2); padding: 8px 24px; border-radius: 8px; display: inline-block; margin-top: 10px; }
+.correcao-lista { padding: 16px 20px; background: #f8f9fa; border-top: 1px solid #ddd; }
+.correcao-lista h4 { margin: 0 0 12px; color: #333; font-size: 14px; }
+.correcao-item { display: flex; align-items: flex-start; gap: 10px; font-size: 13px; padding: 7px 0; border-bottom: 1px solid #eee; line-height: 1.5; }
+.correcao-item:last-child { border-bottom: none; }
+.ci-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+.ci-errou { color: #c0392b; }
+.ci-acertou { color: #27ae60; }
+
+/* Mark answers after submission */
+.aval-opt input[type=radio]:checked + label.errada { background: #fdf3f2; color: #78281f; border-color: #e74c3c; }
+.aval-opt label.certa-mark { background: #eaf7ee !important; color: #1a5e34 !important; border-color: #27ae60 !important; }
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- ═══════════════════════════════════════════
+     INTRO
+════════════════════════════════════════════ -->
+<div class="intro-box">
+    <h1>💶 Investiga o Teu Dinheiro — Aplicações Financeiras</h1>
+    <p class="subtitulo">10TDS-TSCR· Matemática Financeira · Módulo: Aplicações de Poupança · Prof David TS. Antunes</p>
+    <div class="zonas-grid">
+        <div class="zona-card zc1">
+            <div class="icon">🖥️</div>
+            <h3>Zona 1 — Simulador</h3>
+            <p>Ferramenta de cálculo que podes usar à vontade durante toda a atividade. Experimenta mudar os valores e observa o que acontece.</p>
+        </div>
+        <div class="zona-card zc2">
+            <div class="icon">🔍</div>
+            <h3>Zona 2 — Exploração</h3>
+            <p>Perguntas guiadas para descobrires os conceitos. Podes tentar quantas vezes quiseres — o objetivo é aprenderes.</p>
+        </div>
+        <div class="zona-card zc3">
+            <div class="icon">📝</div>
+            <h3>Zona 3 — Avaliação</h3>
+            <p><strong>Só podes submeter uma vez.</strong> Responde com o que aprendeste. As respostas ficam gravadas para o professor.</p>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     ZONA 1 — SIMULADOR
+════════════════════════════════════════════ -->
+<div class="zona z1">
+    <div class="zona-header">
+        <div class="num">1</div>
+        <div>
+            <h2>🖥️ Simulador de Aplicações Financeiras</h2>
+            <p>Usa este simulador nas zonas seguintes. Podes alterar os valores sempre que quiseres.</p>
+        </div>
+    </div>
+    <div class="zona-body">
+        <div class="sim-grid">
+            <div class="inputs-section">
+                <div class="form-group">
+                    <label>1. Capital Inicial (€)</label>
+                    <input type="number" id="capital" value="1000" min="1" oninput="atualizarDerivados()">
+                </div>
+                <div class="form-group">
+                    <label>2. TANB (%)</label>
+                    <input type="number" id="taxa" value="3.5" step="0.1" min="0" oninput="atualizarDerivados()">
+                </div>
+                <div class="form-group">
+                    <label>3. Tipo de Juro</label>
+                    <select id="tipoJuro" onchange="atualizarDerivados()">
+                        <option value="composto">Juros Compostos (RCC)</option>
+                        <option value="simples">Juros Simples (RCS)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>4. Capitalização</label>
+                    <select id="periodoCap" onchange="atualizarDerivados()">
+                        <option value="12">Mensal (12/ano)</option>
+                        <option value="4">Trimestral (4/ano)</option>
+                        <option value="2">Semestral (2/ano)</option>
+                        <option value="1" selected>Anual (1/ano)</option>
+                    </select>
+                </div>
+                <div class="form-group full-width">
+                    <label>5. Prazo Total (Anos)</label>
+                    <input type="number" id="prazoAnos" value="5" min="1" oninput="atualizarDerivados()">
+                </div>
+            </div>
+            <div class="derived-section">
+                <h4>Parâmetros Derivados</h4>
+                <div class="derived-card">
+                    <div class="title">N.º Total de Períodos de Capitalização (N)</div>
+                    <div class="value" id="derN">5 períodos</div>
+                </div>
+                <div class="derived-card">
+                    <div class="title">Taxa por Período de Capitalização (r<sub>p</sub>)</div>
+                    <div class="value" id="derRp">3.5000 %</div>
+                </div>
+            </div>
+        </div>
+        <button class="btn-calc" onclick="calcularCapitalizacao()">▶ Calcular Capitalização</button>
+        <div class="results" id="resumo" style="display:none;">
+            <div>Juros Brutos Totais: <span id="valJuros" style="color:#27ae60;">0 €</span></div>
+            <div>Capital Acumulado Final: <span id="valTotal" style="color:#2980b9;">0 €</span></div>
+        </div>
+        <canvas id="graficoEvolucao" height="85"></canvas>
+        <div id="tabelaContainer"></div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     ZONA 2 — EXPLORAÇÃO GUIADA
+════════════════════════════════════════════ -->
+<div class="zona z2">
+    <div class="zona-header">
+        <div class="num">2</div>
+        <div>
+            <h2>🔍 Exploração Guiada</h2>
+            <p>Usa o simulador para descobrires os conceitos. Podes tentar quantas vezes precisares.</p>
+        </div>
+    </div>
+    <div class="zona-body">
+        <div class="aviso-exp">
+            💡 <strong>Como funciona:</strong> Cada missão diz-te o que configurar no simulador. Observa os resultados, preenche as respostas e clica em <strong>"Verificar"</strong>. Se errares, recebes uma dica e podes tentar de novo. O objetivo é <em>perceber o porquê</em>, não apenas acertar.
+        </div>
+
+        <div class="progresso-wrap">
+            <div class="progresso-texto" id="textoProgresso">Missões concluídas: 0 / 4</div>
+            <div class="progresso-barra-bg"><div class="progresso-barra" id="barraProgresso"></div></div>
+        </div>
+
+        <!-- ── Missão 1 ── -->
+        <div class="missao">
+            <h3>🧩 Missão 1 — A Taxa por Período</h3>
+            <div class="config">
+                Configura: <strong>Capital = 1000 €</strong> · <strong>TANB = 12%</strong> · <strong>Tipo = Juros Simples</strong> · <strong>Prazo = 1 ano</strong><br>
+                Vai mudando apenas o campo <strong>Capitalização</strong> e observa os <em>Parâmetros Derivados</em> à direita do simulador.
+            </div>
+            <table class="fill-table">
+                <tr><th>Capitalização</th><th>Taxa por Período (r<sub>p</sub>)</th><th>N.º de Períodos (N)</th></tr>
+                <tr><td class="fixed">Anual (1/ano)</td><td class="fixed">12,0000 %</td><td class="fixed">1</td></tr>
+                <tr>
+                    <td class="fixed">Semestral (2/ano)</td>
+                    <td><input type="number" class="resp-num" id="m1_rp_sem" placeholder="?"> %</td>
+                    <td><input type="number" class="resp-num" id="m1_n_sem" placeholder="?"></td>
+                </tr>
+                <tr>
+                    <td class="fixed">Trimestral (4/ano)</td>
+                    <td><input type="number" class="resp-num" id="m1_rp_tri" placeholder="?"> %</td>
+                    <td><input type="number" class="resp-num" id="m1_n_tri" placeholder="?"></td>
+                </tr>
+                <tr>
+                    <td class="fixed">Mensal (12/ano)</td>
+                    <td><input type="number" class="resp-num" id="m1_rp_men" placeholder="?"> %</td>
+                    <td><input type="number" class="resp-num" id="m1_n_men" placeholder="?"></td>
+                </tr>
+            </table>
+            <div class="pergunta">
+                <p><span class="pnum">❓</span> Se a TANB for <strong>6%</strong> e a capitalização for <strong>semestral</strong>, qual é a taxa de cada semestre?</p>
+                <input type="number" class="resp-num" id="m1_extra" placeholder="? %"> %
+            </div>
+            <button class="btn-ver" onclick="verificarM1()">✔ Verificar Missão 1</button>
+            <div class="feedback" id="fb1"></div>
+        </div>
+
+        <!-- ── Missão 2 ── -->
+        <div class="missao">
+            <h3>🔬 Missão 2 — Simples vs Compostos</h3>
+            <div class="config">
+                Configura: <strong>Capital = 1000 €</strong> · <strong>TANB = 10%</strong> · <strong>Capitalização = Anual</strong> · <strong>Prazo = 4 anos</strong><br>
+                Calcula com <strong>Juros Simples</strong>, observa a tabela. Depois muda para <strong>Juros Compostos</strong> e calcula novamente.
+            </div>
+            <div class="pergunta">
+                <p><span class="pnum">1.</span> Nos <strong>Juros Simples</strong>, o "Juro Gerado no Período" é sempre igual ou vai mudando?</p>
+                <div class="opcoes">
+                    <input type="radio" name="m2_q1" id="m2q1a" value="igual"><label for="m2q1a">É sempre igual</label>
+                    <input type="radio" name="m2_q1" id="m2q1b" value="muda"><label for="m2q1b">Vai aumentando</label>
+                </div>
+            </div>
+            <div class="pergunta">
+                <p><span class="pnum">2.</span> Nos <strong>Juros Compostos</strong>, o "Juro Gerado no Período" é sempre igual ou vai mudando?</p>
+                <div class="opcoes">
+                    <input type="radio" name="m2_q2" id="m2q2a" value="igual"><label for="m2q2a">É sempre igual</label>
+                    <input type="radio" name="m2_q2" id="m2q2b" value="muda"><label for="m2q2b">Vai aumentando</label>
+                </div>
+            </div>
+            <div class="pergunta">
+                <p><span class="pnum">3.</span> Nos Juros Simples, o banco calcula o juro sempre sobre os mesmos 1000 € iniciais ou sobre o valor acumulado do período anterior?</p>
+                <div class="opcoes">
+                    <input type="radio" name="m2_q3" id="m2q3a" value="inicial"><label for="m2q3a">Sempre sobre os 1000 € iniciais</label>
+                    <input type="radio" name="m2_q3" id="m2q3b" value="anterior"><label for="m2q3b">Sobre o valor acumulado do período anterior</label>
+                </div>
+            </div>
+            <div class="pergunta">
+                <p><span class="pnum">4.</span> Nos Juros Compostos, a base de cálculo do juro de cada período é:</p>
+                <div class="opcoes">
+                    <input type="radio" name="m2_q4" id="m2q4a" value="inicial"><label for="m2q4a">Sempre os 1000 € iniciais</label>
+                    <input type="radio" name="m2_q4" id="m2q4b" value="anterior"><label for="m2q4b">O capital acumulado no período anterior</label>
+                </div>
+            </div>
+            <button class="btn-ver" onclick="verificarM2()">✔ Verificar Missão 2</button>
+            <div class="feedback" id="fb2"></div>
+        </div>
+
+        <!-- ── Missão 3 ── -->
+        <div class="missao">
+            <h3>💰 Missão 3 — Importa a Frequência?</h3>
+            <div class="config">
+                Mantém: <strong>Capital = 1000 €</strong> · <strong>TANB = 10%</strong> · <strong>Prazo = 5 anos</strong><br>
+                Experimenta as 4 combinações e regista o <em>Capital Acumulado Final</em>.
+            </div>
+            <div class="pergunta">
+                <p><span class="pnum">1.</span> Juros <strong>Simples</strong> + Capitalização <strong>Anual</strong> → Capital Final:</p>
+                <div class="aval-num-wrap"><input type="number" class="resp-num" id="m3_sa" placeholder="?"> €</div>
+            </div>
+            <div class="pergunta">
+                <p><span class="pnum">2.</span> Juros <strong>Simples</strong> + Capitalização <strong>Mensal</strong> → Capital Final:</p>
+                <div class="aval-num-wrap"><input type="number" class="resp-num" id="m3_sm" placeholder="?"> €</div>
+            </div>
+            <div class="pergunta">
+                <p><span class="pnum">3.</span> Nos Juros Simples, mudar de capitalização Anual para Mensal altera o capital final?</p>
+                <div class="opcoes">
+                    <input type="radio" name="m3_q3" id="m3q3a" value="sim"><label for="m3q3a">Sim, dá mais dinheiro</label>
+                    <input type="radio" name="m3_q3" id="m3q3b" value="nao"><label for="m3q3b">Não, o resultado é igual</label>
+                </div>
+            </div>
+            <div class="pergunta">
+                <p><span class="pnum">4.</span> Juros <strong>Compostos</strong> + Capitalização <strong>Anual</strong> → Capital Final:</p>
+                <div class="aval-num-wrap"><input type="number" class="resp-num" id="m3_ca" placeholder="?"> €</div>
+            </div>
+            <div class="pergunta">
+                <p><span class="pnum">5.</span> Juros <strong>Compostos</strong> + Capitalização <strong>Mensal</strong> → Capital Final:</p>
+                <div class="aval-num-wrap"><input type="number" class="resp-num" id="m3_cm" placeholder="?"> €</div>
+            </div>
+            <div class="pergunta">
+                <p><span class="pnum">6.</span> Nos Juros Compostos, a capitalização mensal dá mais dinheiro do que a anual?</p>
+                <div class="opcoes">
+                    <input type="radio" name="m3_q6" id="m3q6a" value="sim"><label for="m3q6a">Sim, dá mais dinheiro</label>
+                    <input type="radio" name="m3_q6" id="m3q6b" value="nao"><label for="m3q6b">Não, é igual</label>
+                </div>
+            </div>
+            <button class="btn-ver" onclick="verificarM3()">✔ Verificar Missão 3</button>
+            <div class="feedback" id="fb3"></div>
+        </div>
+
+        <!-- ── Missão 4 ── -->
+        <div class="missao">
+            <h3>⏱️ Missão 4 — Curto Prazo vs Longo Prazo</h3>
+            <div class="config">
+                Dois amigos depositaram <strong>10 000 €</strong> a <strong>TANB = 6%</strong>, capitalização <strong>Mensal</strong>.<br>
+                <strong>Rui</strong> = Juros Simples &nbsp;|&nbsp; <strong>Diogo</strong> = Juros Compostos<br>
+                Usa o simulador com cada opção para responder.
+            </div>
+            <div class="pergunta">
+                <p><span class="pnum">1.</span> Ao fim de <strong>2 meses</strong> (olha para os períodos 1 e 2 na tabela), a diferença entre o que Rui e Diogo ganharam é:</p>
+                <div class="opcoes">
+                    <input type="radio" name="m4_q1" id="m4q1a" value="grande"><label for="m4q1a">Grande, vale muito a pena escolher bem</label>
+                    <input type="radio" name="m4_q1" id="m4q1b" value="pequena"><label for="m4q1b">Quase insignificante / muito pequena</label>
+                </div>
+            </div>
+            <div class="pergunta">
+                <p><span class="pnum">2.</span> Capital Final do <strong>Rui</strong> ao fim de <strong>10 anos</strong> (Juros Simples):</p>
+                <div class="aval-num-wrap"><input type="number" class="resp-num" id="m4_rui" placeholder="?"> €</div>
+            </div>
+            <div class="pergunta">
+                <p><span class="pnum">3.</span> Capital Final do <strong>Diogo</strong> ao fim de <strong>10 anos</strong> (Juros Compostos):</p>
+                <div class="aval-num-wrap"><input type="number" class="resp-num" id="m4_diogo" placeholder="?"> €</div>
+            </div>
+            <div class="pergunta">
+                <p><span class="pnum">4.</span> Para uma aplicação de apenas 1–2 meses, preocupar-me se é juro simples ou composto:</p>
+                <div class="opcoes">
+                    <input type="radio" name="m4_q4" id="m4q4a" value="importa"><label for="m4q4a">É muito importante, há grande diferença</label>
+                    <input type="radio" name="m4_q4" id="m4q4b" value="nao"><label for="m4q4b">Não importa muito, a diferença é mínima</label>
+                </div>
+            </div>
+            <div class="pergunta">
+                <p><span class="pnum">5.</span> Se levantares um depósito a prazo <strong>antes do fim do prazo</strong>, o que achas que acontece aos juros?</p>
+                <div class="opcoes">
+                    <input type="radio" name="m4_q5" id="m4q5a" value="perde"><label for="m4q5a">Perco os juros desse período</label>
+                    <input type="radio" name="m4_q5" id="m4q5b" value="mantem"><label for="m4q5b">Recebo os juros proporcionais ao tempo</label>
+                </div>
+            </div>
+            <button class="btn-ver" onclick="verificarM4()">✔ Verificar Missão 4</button>
+            <div class="feedback" id="fb4"></div>
+        </div>
+
+    </div><!-- /zona-body -->
+</div><!-- /zona 2 -->
+
+<!-- ═══════════════════════════════════════════
+     ZONA 3 — AVALIAÇÃO (one-shot)
+════════════════════════════════════════════ -->
+<div class="zona z3">
+    <div class="zona-header">
+        <div class="num">3</div>
+        <div>
+            <h2>📝 Avaliação</h2>
+            <p>Responde com o que aprendeste. Podes continuar a usar o simulador.</p>
+        </div>
+    </div>
+    <div class="zona-body">
+        <div class="aviso-aval">
+            <div class="icon">⚠️</div>
+            <div>
+                <strong>Atenção — só podes submeter UMA vez.</strong><br>
+                Depois de clicares em "Submeter Avaliação", as respostas ficam guardadas e não podes alterar nada. O professor vai ver a tua nota e o que respondeste. Certifica-te de que preencheste tudo antes de submeter.
+            </div>
+        </div>
+
+        <div id="formAval">
+
+            <!-- Q1 -->
+            <div class="aval-q">
+                <p><span class="aval-qnum">Q1</span> Um banco oferece uma <strong>TANB = 9%</strong> com capitalização <strong>trimestral</strong>. Qual é a taxa de juro de cada trimestre?</p>
+                <div class="aval-num-wrap"><input type="number" class="resp-aval" id="a1" placeholder="? %"> %</div>
+            </div>
+
+            <!-- Q2 -->
+            <div class="aval-q">
+                <p><span class="aval-qnum">Q2</span> Uma pessoa deposita <strong>2000 €</strong> a <strong>juros simples</strong>, TANB = 8%, capitalização anual, por <strong>3 anos</strong>. O juro gerado no 3.º ano é:</p>
+                <div class="aval-opt" id="aopt2">
+                    <input type="radio" name="a2" id="a2a" value="a"><label for="a2a">Maior do que no 1.º ano</label>
+                    <input type="radio" name="a2" id="a2b" value="b"><label for="a2b">Igual ao do 1.º ano</label>
+                    <input type="radio" name="a2" id="a2c" value="c"><label for="a2c">Menor do que no 1.º ano</label>
+                </div>
+            </div>
+
+            <!-- Q3 -->
+            <div class="aval-q">
+                <p><span class="aval-qnum">Q3</span> Nos <strong>juros compostos</strong>, o juro do 3.º período é calculado sobre:</p>
+                <div class="aval-opt" id="aopt3">
+                    <input type="radio" name="a3" id="a3a" value="a"><label for="a3a">O capital inicial, sempre o mesmo</label>
+                    <input type="radio" name="a3" id="a3b" value="b"><label for="a3b">O capital acumulado no final do 2.º período</label>
+                    <input type="radio" name="a3" id="a3c" value="c"><label for="a3c">A soma de todos os juros anteriores</label>
+                </div>
+            </div>
+
+            <!-- Q4 -->
+            <div class="aval-q">
+                <p><span class="aval-qnum">Q4</span> Nos <strong>juros simples</strong>, mudar a capitalização de <em>anual</em> para <em>mensal</em> (mantendo TANB e prazo iguais):</p>
+                <div class="aval-opt" id="aopt4">
+                    <input type="radio" name="a4" id="a4a" value="a"><label for="a4a">Aumenta o capital final</label>
+                    <input type="radio" name="a4" id="a4b" value="b"><label for="a4b">Não altera o capital final</label>
+                    <input type="radio" name="a4" id="a4c" value="c"><label for="a4c">Diminui o capital final</label>
+                </div>
+            </div>
+
+            <!-- Q5 -->
+            <div class="aval-q">
+                <p><span class="aval-qnum">Q5</span> A diferença entre juros simples e compostos é mais visível:</p>
+                <div class="aval-opt" id="aopt5">
+                    <input type="radio" name="a5" id="a5a" value="a"><label for="a5a">Em aplicações de 1 a 2 meses</label>
+                    <input type="radio" name="a5" id="a5b" value="b"><label for="a5b">Em aplicações de 10 a 20 anos</label>
+                    <input type="radio" name="a5" id="a5c" value="c"><label for="a5c">É sempre igual, independente do prazo</label>
+                </div>
+            </div>
+
+            <!-- Q6 -->
+            <div class="aval-q">
+                <p><span class="aval-qnum">Q6</span> Tens um depósito a prazo com capitalização <strong>semestral</strong> (6 em 6 meses). Se levantares o dinheiro ao fim de <strong>4 meses</strong>:</p>
+                <div class="aval-opt" id="aopt6">
+                    <input type="radio" name="a6" id="a6a" value="a"><label for="a6a">Recebes os juros de 4 meses (proporcional)</label>
+                    <input type="radio" name="a6" id="a6b" value="b"><label for="a6b">Perdes os juros desse semestre (período ainda não fechou)</label>
+                    <input type="radio" name="a6" id="a6c" value="c"><label for="a6c">Recebes os juros de todo o semestre na mesma</label>
+                </div>
+            </div>
+
+            <button class="btn-submeter" id="btnSubmeter" onclick="submeterAvaliacao()">📤 Submeter Avaliação</button>
+        </div><!-- /formAval -->
+
+        <div class="resultado-aval" id="resultadoAval"></div>
+
+    </div><!-- /zona-body -->
+</div><!-- /zona 3 -->
+
+</div><!-- /page -->
+
+<script>
+/* ═════════════════════════════════
+   SIMULADOR
+═════════════════════════════════ */
+let meuGrafico;
+
+function atualizarDerivados() {
+    const rAnual = parseFloat(document.getElementById('taxa').value) || 0;
+    const k      = parseInt(document.getElementById('periodoCap').value);
+    const anos   = parseInt(document.getElementById('prazoAnos').value) || 0;
+    const N      = anos * k;
+    const rP     = rAnual / k;
+    document.getElementById('derN').innerText  = `${N} período(s)`;
+    document.getElementById('derRp').innerText = `${rP.toFixed(4)} %`;
+    return { N, rPeriodo: rP / 100 };
+}
+
+function calcularCapitalizacao() {
+    const C0   = parseFloat(document.getElementById('capital').value) || 0;
+    const tipo = document.getElementById('tipoJuro').value;
+    const { N, rPeriodo } = atualizarDerivados();
+
+    let labels = [], dados = [];
+    let html = `<h3>Evolução da Aplicação Período a Período</h3>
+        <table class="sim-table"><tr>
+        <th>Período (n)</th><th>Capital Inicial do Período</th>
+        <th>Juro Gerado no Período</th><th>Capital Acumulado Final</th></tr>`;
+
+    let cap = C0;
+    for (let i = 1; i <= N; i++) {
+        labels.push('P' + i);
+        let juro, acum;
+        if (tipo === 'simples') {
+            juro = C0 * rPeriodo;
+            acum = C0 + juro * i;
+        } else {
+            juro = cap * rPeriodo;
+            acum = cap + juro;
+            cap  = acum;
+        }
+        dados.push(acum.toFixed(2));
+        const base = (tipo === 'simples') ? C0 : (acum - juro);
+        html += `<tr><td>${i}</td><td>${base.toFixed(2)} €</td>
+                 <td>${juro.toFixed(2)} €</td><td>${acum.toFixed(2)} €</td></tr>`;
+    }
+    html += `</table>`;
+    document.getElementById('tabelaContainer').innerHTML = html;
+
+    const total  = parseFloat(dados[N - 1]) || C0;
+    const juros  = total - C0;
+    document.getElementById('resumo').style.display = 'flex';
+    document.getElementById('valJuros').innerText = juros.toFixed(2) + ' €';
+    document.getElementById('valTotal').innerText = total.toFixed(2) + ' €';
+
+    const ctx = document.getElementById('graficoEvolucao').getContext('2d');
+    if (meuGrafico) meuGrafico.destroy();
+    meuGrafico = new Chart(ctx, {
+        type: 'line',
+        data: { labels, datasets: [{ label: 'Capital Acumulado (€)', data: dados,
+            borderColor: '#2980b9', backgroundColor: 'rgba(41,128,185,0.1)', fill: true, tension: 0.1 }] },
+        options: { responsive: true, scales: { y: { beginAtZero: false } } }
+    });
+}
+
+atualizarDerivados();
+calcularCapitalizacao();
+
+/* ═════════════════════════════════
+   EXPLORAÇÃO — helpers
+═════════════════════════════════ */
+const concluidas = { m1: false, m2: false, m3: false, m4: false };
+
+function fb(id, ok, msgOk, msgErro) {
+    const el = document.getElementById(id);
+    el.className = 'feedback ' + (ok ? 'ok' : 'erro');
+    el.innerHTML = ok ? msgOk : msgErro;
+}
+
+function perto(v, alvo, tol) { return Math.abs(v - alvo) <= tol; }
+
+function atualizarProgresso() {
+    const n   = Object.values(concluidas).filter(Boolean).length;
+    const pct = (n / 4) * 100;
+    document.getElementById('barraProgresso').style.width = pct + '%';
+    document.getElementById('textoProgresso').innerText = `Missões concluídas: ${n} / 4`;
+}
+
+/* Missão 1 */
+function verificarM1() {
+    const rpSem = parseFloat(document.getElementById('m1_rp_sem').value);
+    const nSem  = parseFloat(document.getElementById('m1_n_sem').value);
+    const rpTri = parseFloat(document.getElementById('m1_rp_tri').value);
+    const nTri  = parseFloat(document.getElementById('m1_n_tri').value);
+    const rpMen = parseFloat(document.getElementById('m1_rp_men').value);
+    const nMen  = parseFloat(document.getElementById('m1_n_men').value);
+    const extra = parseFloat(document.getElementById('m1_extra').value);
+
+    const ok = perto(rpSem, 6, 0.1) && nSem === 2
+            && perto(rpTri, 3, 0.1) && nTri === 4
+            && perto(rpMen, 1, 0.1) && nMen === 12
+            && perto(extra, 3, 0.1);
+
+    if (ok) { concluidas.m1 = true; atualizarProgresso(); }
+
+    fb('fb1', ok,
+        '✅ <strong>Muito bem!</strong> A TANB divide-se pelo número de capitalizações por ano: 12% ÷ 2 = 6%, ÷ 4 = 3%, ÷ 12 = 1%. Para a questão extra: 6% ÷ 2 = 3%.',
+        (() => {
+            let d = [];
+            if (!perto(rpSem,6,.1)||nSem!==2) d.push('Semestral: 12÷2 = <strong>6%</strong>, <strong>2</strong> períodos.');
+            if (!perto(rpTri,3,.1)||nTri!==4) d.push('Trimestral: 12÷4 = <strong>3%</strong>, <strong>4</strong> períodos.');
+            if (!perto(rpMen,1,.1)||nMen!==12) d.push('Mensal: 12÷12 = <strong>1%</strong>, <strong>12</strong> períodos.');
+            if (!perto(extra,3,.1)) d.push('6% semestral → 6÷2 = <strong>3%</strong> por semestre.');
+            return '❌ ' + d.join('<br>• ');
+        })()
+    );
+}
+
+/* Missão 2 */
+function verificarM2() {
+    const q1 = document.querySelector('input[name="m2_q1"]:checked');
+    const q2 = document.querySelector('input[name="m2_q2"]:checked');
+    const q3 = document.querySelector('input[name="m2_q3"]:checked');
+    const q4 = document.querySelector('input[name="m2_q4"]:checked');
+    if (!q1||!q2||!q3||!q4) { fb('fb2',false,'','⚠️ Responde a todas as perguntas antes de verificar.'); return; }
+
+    const ok = q1.value==='igual' && q2.value==='muda' && q3.value==='inicial' && q4.value==='anterior';
+    if (ok) { concluidas.m2 = true; atualizarProgresso(); }
+
+    fb('fb2', ok,
+        '✅ <strong>Excelente!</strong> Nos juros simples, o banco calcula sempre sobre os 1000 € iniciais — os juros nunca rendem juros. Nos compostos, cada período parte do valor já acumulado — os "juros rendem juros".',
+        (() => {
+            let d = [];
+            if (q1.value!=='igual')    d.push('Simples → juro por período é <strong>sempre igual</strong> (olha para a tabela).');
+            if (q2.value!=='muda')     d.push('Compostos → juro <strong>vai aumentando</strong> cada período.');
+            if (q3.value!=='inicial')  d.push('Simples → base sempre são os <strong>1000 € iniciais</strong>.');
+            if (q4.value!=='anterior') d.push('Compostos → base é o <strong>capital acumulado do período anterior</strong>.');
+            return '❌ Revê:<br>• ' + d.join('<br>• ');
+        })()
+    );
+}
+
+/* Missão 3 */
+function verificarM3() {
+    const sa = parseFloat(document.getElementById('m3_sa').value);
+    const sm = parseFloat(document.getElementById('m3_sm').value);
+    const ca = parseFloat(document.getElementById('m3_ca').value);
+    const cm = parseFloat(document.getElementById('m3_cm').value);
+    const q3 = document.querySelector('input[name="m3_q3"]:checked');
+    const q6 = document.querySelector('input[name="m3_q6"]:checked');
+    if (!q3||!q6||isNaN(sa)||isNaN(sm)||isNaN(ca)||isNaN(cm)) { fb('fb3',false,'','⚠️ Preenche tudo antes de verificar.'); return; }
+
+    const ok = perto(sa,1500,2) && perto(sm,1500,2)
+            && perto(ca,1610.51,3) && perto(cm,1645.31,3)
+            && q3.value==='nao' && q6.value==='sim';
+
+    if (ok) { concluidas.m3 = true; atualizarProgresso(); }
+
+    fb('fb3', ok,
+        '✅ <strong>Perfeito!</strong> Nos juros simples, a frequência não altera o montante final. Nos compostos, mais capitalizações = mais "juros sobre juros" = mais dinheiro.',
+        (() => {
+            let d = [];
+            if (!perto(sa,1500,2))    d.push('Simples + Anual → Capital = 1000 + 1000×10%×5 = <strong>1500,00 €</strong>.');
+            if (!perto(sm,1500,2))    d.push('Simples + Mensal → também <strong>1500,00 €</strong> (é igual ao anual).');
+            if (!perto(ca,1610.51,3)) d.push('Compostos + Anual → <strong>≈ 1610,51 €</strong>.');
+            if (!perto(cm,1645.31,3)) d.push('Compostos + Mensal → <strong>≈ 1645,31 €</strong>.');
+            if (q3.value!=='nao') d.push('Simples: a frequência <strong>não altera</strong> o valor final.');
+            if (q6.value!=='sim') d.push('Compostos: mensal <strong>dá mais</strong> do que anual.');
+            return '❌ Revê:<br>• ' + d.join('<br>• ');
+        })()
+    );
+}
+
+/* Missão 4 */
+function verificarM4() {
+    const rui   = parseFloat(document.getElementById('m4_rui').value);
+    const diogo = parseFloat(document.getElementById('m4_diogo').value);
+    const q1 = document.querySelector('input[name="m4_q1"]:checked');
+    const q4 = document.querySelector('input[name="m4_q4"]:checked');
+    const q5 = document.querySelector('input[name="m4_q5"]:checked');
+    if (!q1||!q4||!q5||isNaN(rui)||isNaN(diogo)) { fb('fb4',false,'','⚠️ Preenche tudo antes de verificar.'); return; }
+
+    const ok = perto(rui,16000,5) && perto(diogo,18193.97,10)
+            && q1.value==='pequena' && q4.value==='nao' && q5.value==='perde';
+
+    if (ok) { concluidas.m4 = true; atualizarProgresso(); }
+
+    fb('fb4', ok,
+        '✅ <strong>Muito bem!</strong> A 2 meses, a diferença é mínima. A 10 anos, o Diogo recebe cerca de 2200 € a mais. E sim — levantares antes do prazo significa perder os juros desse período.',
+        (() => {
+            let d = [];
+            if (!perto(rui,16000,5))      d.push('Rui (Simples, 10000€, 6%, mensal, 10 anos) → <strong>≈ 16 000 €</strong>.');
+            if (!perto(diogo,18193.97,10)) d.push('Diogo (Compostos) → <strong>≈ 18 194 €</strong>.');
+            if (q1.value!=='pequena') d.push('A 2 meses, a diferença é <strong>quase insignificante</strong>.');
+            if (q4.value!=='nao')     d.push('A 1-2 meses, o tipo de juro <strong>não importa muito</strong>.');
+            if (q5.value!=='perde')   d.push('Levantar antes do prazo → <strong>perdes os juros</strong> desse período.');
+            return '❌ Revê:<br>• ' + d.join('<br>• ');
+        })()
+    );
+}
+
+/* ═════════════════════════════════
+   AVALIAÇÃO — ONE SHOT
+═════════════════════════════════ */
+const LS_KEY = 'juro_tscr_aval_v1';
+
+/* Respostas corretas */
+const CORRETAS = { a1: 2.25, a2: 'b', a3: 'b', a4: 'b', a5: 'b', a6: 'b' };
+const TEXTOS_Q = [
+    'TANB 9%, trimestral → taxa por trimestre',
+    'Juros simples — juro do 3.º ano vs 1.º ano',
+    'Juros compostos — base de cálculo do 3.º período',
+    'Juros simples — efeito de mudar a frequência de capitalização',
+    'Quando é mais visível a diferença simples vs compostos',
+    'Depósito semestral levantado ao fim de 4 meses'
+];
+const TEXTOS_CERTA = {
+    a1: '2,25%',
+    a2: 'Igual ao do 1.º ano',
+    a3: 'O capital acumulado no final do 2.º período',
+    a4: 'Não altera o capital final',
+    a5: 'Em aplicações de 10 a 20 anos',
+    a6: 'Perdes os juros desse semestre (período ainda não fechou)'
+};
+
+function submeterAvaliacao() {
+    /* Verificar se já foi submetido */
+    if (localStorage.getItem(LS_KEY)) { mostrarResultadoGuardado(); return; }
+
+    /* Recolher respostas */
+    const r = {};
+    r.a1 = parseFloat(document.getElementById('a1').value);
+    ['a2','a3','a4','a5','a6'].forEach(k => {
+        const sel = document.querySelector(`input[name="${k}"]:checked`);
+        r[k] = sel ? sel.value : null;
+    });
+
+    /* Validar preenchimento */
+    if (isNaN(r.a1) || Object.values(r).some(v => v === null || v === undefined)) {
+        alert('⚠️ Tens perguntas por responder. Preenche tudo antes de submeter.');
+        return;
+    }
+
+    /* Calcular nota */
+    const acertos = {
+        a1: Math.abs(r.a1 - CORRETAS.a1) <= 0.05,
+        a2: r.a2 === CORRETAS.a2,
+        a3: r.a3 === CORRETAS.a3,
+        a4: r.a4 === CORRETAS.a4,
+        a5: r.a5 === CORRETAS.a5,
+        a6: r.a6 === CORRETAS.a6
+    };
+    const nota = Object.values(acertos).filter(Boolean).length;
+
+    /* Guardar em localStorage */
+    const agora = new Date();
+    const payload = { r, acertos, nota, ts: agora.toISOString() };
+    localStorage.setItem(LS_KEY, JSON.stringify(payload));
+
+    /* Bloquear form */
+    bloquearFormulario(payload);
+}
+
+function bloquearFormulario(payload) {
+    /* Desabilitar todos os inputs */
+    document.getElementById('formAval').querySelectorAll('input, button').forEach(el => {
+        el.disabled = true;
+    });
+    /* Marcar certas / erradas visualmente */
+    ['a2','a3','a4','a5','a6'].forEach(k => {
+        const div = document.getElementById('aopt' + k.slice(1));
+        if (!div) return;
+        div.classList.add('locked');
+        div.querySelectorAll('label').forEach(lbl => {
+            const radio = document.getElementById(lbl.htmlFor);
+            if (!radio) return;
+            if (radio.value === CORRETAS[k]) lbl.classList.add('certa-mark');
+            if (radio.checked && radio.value !== CORRETAS[k]) lbl.classList.add('errada');
+        });
+    });
+
+    /* Mostrar resultado */
+    mostrarResultado(payload);
+}
+
+function mostrarResultado(payload) {
+    const { nota, acertos, r, ts } = payload;
+    const agora = new Date(ts);
+    const hhmm  = agora.getHours().toString().padStart(2,'0') + agora.getMinutes().toString().padStart(2,'0');
+    const codigo = `AVAL-${nota}6-${hhmm}`;
+
+    let cls = nota >= 5 ? 'res-verde' : nota >= 3 ? 'res-amarelo' : 'res-vermelho';
+    let emoji = nota >= 5 ? '🏆' : nota >= 3 ? '👍' : '📖';
+    let msg   = nota >= 5 ? 'Excelente trabalho!'
+              : nota >= 3 ? 'Bom esforço — há pontos a melhorar.'
+              : 'Precisas de rever os conceitos com o professor.';
+
+    let linhas = '';
+    const chaves = ['a1','a2','a3','a4','a5','a6'];
+    chaves.forEach((k, i) => {
+        const ok  = acertos[k];
+        const val = k === 'a1' ? (isNaN(r[k]) ? '—' : r[k] + '%') : (r[k] ? letraParaTexto(k, r[k]) : '—');
+        linhas += `<div class="correcao-item">
+            <span class="ci-icon ${ok ? 'ci-acertou' : 'ci-errou'}">${ok ? '✅' : '❌'}</span>
+            <div>
+                <strong>Q${i+1} — ${TEXTOS_Q[i]}</strong><br>
+                A tua resposta: <em>${val}</em>
+                ${ok ? '' : `&nbsp;→&nbsp; Resposta certa: <strong>${TEXTOS_CERTA[k]}</strong>`}
+            </div>
+        </div>`;
+    });
+
+    document.getElementById('resultadoAval').style.display = 'block';
+    document.getElementById('resultadoAval').innerHTML = `
+        <div class="resultado-header ${cls}">
+            <h2>${emoji} Avaliação Submetida</h2>
+            <div class="nota">${nota} / 6</div>
+            <p>${msg}</p>
+            <p style="font-size:13px; margin-top:12px;">Mostra este código ao professor:</p>
+            <div class="codigo-conclusao">${codigo}</div>
+        </div>
+        <div class="correcao-lista">
+            <h4>Correção detalhada:</h4>
+            ${linhas}
+        </div>`;
+
+    document.getElementById('resultadoAval').scrollIntoView({ behavior: 'smooth' });
+}
+
+function letraParaTexto(k, v) {
+    const mapa = {
+        a2: { a: 'Maior do que no 1.º ano', b: 'Igual ao do 1.º ano', c: 'Menor do que no 1.º ano' },
+        a3: { a: 'O capital inicial, sempre o mesmo', b: 'O capital acumulado no final do 2.º período', c: 'A soma de todos os juros anteriores' },
+        a4: { a: 'Aumenta o capital final', b: 'Não altera o capital final', c: 'Diminui o capital final' },
+        a5: { a: 'Em aplicações de 1 a 2 meses', b: 'Em aplicações de 10 a 20 anos', c: 'É sempre igual, independente do prazo' },
+        a6: { a: 'Recebes os juros de 4 meses (proporcional)', b: 'Perdes os juros desse semestre', c: 'Recebes os juros de todo o semestre na mesma' }
+    };
+    return (mapa[k] && mapa[k][v]) ? mapa[k][v] : v;
+}
+
+function mostrarResultadoGuardado() {
+    try {
+        const payload = JSON.parse(localStorage.getItem(LS_KEY));
+        bloquearFormulario(payload);
+    } catch(e) { /* dados corrompidos — ignorar */ }
+}
+
+/* Verificar no carregamento se já foi submetido */
+window.addEventListener('DOMContentLoaded', () => {
+    if (localStorage.getItem(LS_KEY)) mostrarResultadoGuardado();
+});
+</script>
+</body>
+</html>

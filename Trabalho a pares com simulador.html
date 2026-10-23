@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FLOW - A minha vida a partir dos 18/19 anos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root{--paper:#f5f2ea;--card:#fffdf8;--ink:#1c1b19;--mut:#5c5850;--line:#d9d3c5;--acc:#1e3a8a;--ok:#166534;--bad:#b91c1c;--warn:#92400e}
+*{box-sizing:border-box}
+html{scroll-behavior:auto}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:'Space Grotesk',system-ui,sans-serif;font-size:16px;line-height:1.55}
+.label,.lbl{font-family:'IBM Plex Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:.14em;color:var(--mut);font-weight:500}
+.top{background:var(--ink);color:var(--paper);padding:14px 20px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.top .brand{font-weight:700;font-size:20px;letter-spacing:.04em}
+.top .label{color:#c9c3b3}
+.prog{height:4px;background:#3a3834}
+.prog i{display:block;height:100%;background:#f5f2ea}
+.stepper{display:flex;overflow-x:auto;background:var(--card);border-bottom:1px solid var(--line)}
+.st{flex:1 0 auto;min-width:44px;background:none;border:0;border-right:1px solid var(--line);padding:10px 12px;font:inherit;cursor:pointer;display:flex;align-items:center;gap:8px;color:var(--mut);justify-content:center}
+.st b{font-family:'IBM Plex Mono',monospace;font-size:12px;border:1px solid var(--line);width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;font-weight:500}
+.st span{font-size:13px;white-space:nowrap}
+.st.done b{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.st.on{background:var(--ink);color:var(--paper)}
+.st.on b{background:var(--paper);color:var(--ink);border-color:var(--paper)}
+@media(max-width:820px){.st span{display:none}.st.on span{display:inline}}
+.wrap{max-width:920px;margin:0 auto;padding:32px 20px 90px}
+.wrap.wide{max-width:1280px}
+h1,h2,h3{margin:0;letter-spacing:-.01em;text-wrap:balance}
+h1{font-size:clamp(34px,6vw,56px);line-height:1.05;font-weight:700}
+h2{font-size:clamp(26px,4vw,34px);line-height:1.15;font-weight:700;margin:6px 0 10px}
+h3{font-size:18px;font-weight:600;margin:0 0 8px}
+p{margin:0 0 12px;text-wrap:pretty;max-width:68ch}
+.lead{font-size:18px;color:#3b3934}
+.sec{margin-top:28px}
+.card{background:var(--card);border:1px solid var(--line);padding:20px;margin-bottom:16px}
+.rule{border:0;border-top:1px solid var(--line);margin:22px 0}
+.tw{overflow-x:auto;margin:10px 0}
+table{width:100%;border-collapse:collapse;font-size:14px;min-width:560px}
+th{font-family:'IBM Plex Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--mut);text-align:left;font-weight:500;padding:8px 6px;border-bottom:2px solid var(--ink);vertical-align:bottom}
+td{padding:6px;border-bottom:1px solid var(--line);vertical-align:middle}
+tr.tot td{font-weight:700;border-top:2px solid var(--ink);border-bottom:0}
+tr.cont td:first-child{border-left:3px solid var(--acc);padding-left:8px}
+input[type=text],input[type=number],input:not([type]),select,textarea{width:100%;padding:8px 10px;border:1px solid #bdb6a5;border-radius:0;background:#fff;font:inherit;font-size:14px;color:var(--ink)}
+textarea{resize:vertical;line-height:1.5}
+input.sm{width:78px}
+input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var(--acc);outline-offset:1px}
+input[readonly]{background:#efebe0}
+label.f{display:block;font-weight:600;font-size:13px;margin:12px 0 4px;color:#3b3934}
+.small{font-size:12px;color:var(--mut)}
+.btn{background:var(--ink);color:var(--paper);border:1px solid var(--ink);padding:10px 16px;font:inherit;font-weight:600;font-size:14px;cursor:pointer;border-radius:0}
+.btn:hover{background:#000}
+.btn.acc{background:var(--acc);border-color:var(--acc);color:#fff}
+.btn.acc:hover{background:#172c6b}
+.btn.sec{background:transparent;color:var(--ink)}
+.btn.sec:hover{background:#ebe7da}
+.btn.x{padding:3px 8px;font-size:12px;background:transparent;color:var(--bad);border-color:#d8b4b4}
+.btn.full{width:100%;margin-top:10px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:560px){.grid2{grid-template-columns:1fr}}
+.fb{border-left:4px solid;padding:10px 14px;margin:8px 0;font-size:14px}
+.fb.ok{background:#e9f3ec;color:#14532d;border-color:var(--ok)}
+.fb.bad{background:#fbeded;color:#7f1d1d;border-color:var(--bad)}
+.fb.warn{background:#fbf3e2;color:#78350f;border-color:#b45309}
+.fb.info{background:#e8ecf8;color:#1e3a8a;border-color:var(--acc)}
+.nav{display:flex;justify-content:space-between;gap:12px;margin-top:36px;padding-top:20px;border-top:1px solid var(--line)}
+details{border:1px solid var(--line);background:var(--card);padding:10px 14px;margin:12px 0}
+summary{cursor:pointer;font-weight:600;font-size:14px}
+ol.steps{list-style:none;padding:0;margin:0;counter-reset:s}
+ol.steps li{counter-increment:s;display:flex;gap:14px;padding:12px 0;border-bottom:1px solid var(--line)}
+ol.steps li::before{content:counter(s);font-family:'IBM Plex Mono',monospace;font-weight:500;background:var(--ink);color:var(--paper);min-width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:13px}
+.big{font-size:clamp(26px,4vw,38px);font-weight:700;font-variant-numeric:tabular-nums}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));border:1px solid var(--line);background:var(--card);margin-top:14px}
+.stats>div{padding:12px 14px;border-right:1px solid var(--line)}
+.stats>div:last-child{border-right:0}
+.stats .n{font-size:20px;font-weight:700;font-variant-numeric:tabular-nums;margin-top:2px}
+.simgrid{display:grid;grid-template-columns:400px 1fr;gap:24px;align-items:start}
+@media(max-width:980px){.simgrid{grid-template-columns:1fr}}
+.tabs{display:flex;overflow-x:auto;border-bottom:1px solid var(--line);margin:-20px -20px 14px;padding:0 8px}
+.tab{background:none;border:0;border-bottom:3px solid transparent;padding:12px 10px;font:inherit;font-size:13px;font-weight:600;color:var(--mut);cursor:pointer;white-space:nowrap}
+.tab.on{color:var(--ink);border-bottom-color:var(--acc)}
+.tp{display:none}.tp.on{display:block}
+.chartbox{position:relative;height:380px}
+@media(max-width:560px){.chartbox{height:300px}}
+.banner{margin-top:14px;padding:14px 16px;border-left:5px solid;font-weight:600}
+.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:0;border:1px solid var(--line);margin:12px 0}
+.opts label{display:block;cursor:pointer;border-right:1px solid var(--line);background:var(--card)}
+.opts label:last-child{border-right:0}
+.opts input{position:absolute;opacity:0;pointer-events:none}
+.opts span{display:block;padding:14px 16px;height:100%}
+.opts input:checked+span{background:var(--ink);color:var(--paper)}
+.opts input:focus-visible+span{outline:2px solid var(--acc);outline-offset:-4px}
+.opts b{display:block;font-size:16px}
+.chk{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--line)}
+.chk input{width:18px;height:18px;margin-top:3px;accent-color:var(--acc)}
+.pre{white-space:pre-wrap;border-left:3px solid var(--line);padding:4px 12px;margin:4px 0 14px;font-size:14px;color:#2b2a27}
+.empty{color:var(--mut);font-style:italic}
+@media print{.noprint,.top,.prog,.stepper,.nav{display:none!important}body{background:#fff}.wrap{padding:0;max-width:none}.card{break-inside:avoid}}
+</style>
+</head>
+<body>
+<header class="top noprint">
+  <div class="brand">FLOW</div>
+  <div class="label" id="who">A minha vida a partir dos 18/19 anos</div>
+</header>
+<div class="prog noprint"><i id="progbar" style="width:0"></i></div>
+<nav class="stepper noprint" id="stepper"></nav>
+<main class="wrap" id="app"></main>
+<input type="file" id="fileIn" accept=".json,application/json" style="display:none">
+
+<script>
+/* ================= ESTADO ================= */
+const KEY='flow_trabalho_pares_v1';
+const STEPS=['Início','Emprego','Salário líquido','Objetivos','Despesas','Guia do simulador','Simulação','Reflexão','Apresentação','Entrega'];
+const blank=n=>Array.from({length:n},()=>({o:'',d:'',c:'',l:''}));
+const defaults=()=>({
+  step:0,names:['',''],
+  jobs:[{prof:'',base:'',link:''},{prof:'',base:'',link:''}],
+  liq:[{sub:120,ss:'',irs:'',liq:''},{sub:120,ss:'',irs:'',liq:''}],
+  rend:'',
+  obj:{p0:blank(5),p1:blank(5),com:[
+    {o:'Emancipação total',d:'Renda',c:'',l:''},
+    {o:'',d:'Despesas da casa fixas',c:250,l:''},
+    {o:'Casar',d:'',c:'',l:''},{o:'',d:'',c:'',l:''}]},
+  desp:[{soma:'',cons:'',tot:''},{soma:'',cons:'',tot:''},{soma:'',tot:''}],
+  simInit:false,
+  sim:{salario:1700,despP:400,mesE:8,renda:700,despC:250,taxa:3,
+    objetivos:[{nome:'Carta Condução',mes:5,valor:900}],creditos:[],resgates:[],
+    planos:[{mes:1,valor:150}],carta:null,tab:'base'},
+  cen:[],
+  ref:{pred:'',final:'',a:'',b:'',c:'',d:''},
+  apr:{fmt:'',plano:'',check:[false,false,false,false]}
+});
+let S=defaults();
+try{const raw=localStorage.getItem(KEY);if(raw){S=Object.assign(defaults(),JSON.parse(raw))}}catch(e){}
+let chart=null,last=null,resetArm=false;
+
+/* ================= HELPERS ================= */
+const $=s=>document.querySelector(s);
+const num=v=>{const n=parseFloat(String(v==null?'':v).replace(',','.'));return isNaN(n)?0:n};
+const has=v=>String(v==null?'':v).trim()!=='';
+const fmt=n=>n.toLocaleString('pt-PT',{minimumFractionDigits:2,maximumFractionDigits:2})+' €';
+const fmt0=n=>Math.round(n).toLocaleString('pt-PT')+' €';
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&','<':'<','>':'>','"':'"'}[c]));
+const getPath=p=>p.split('.').reduce((o,k)=>o==null?o:o[k],S);
+const setPath=(p,v)=>{const k=p.split('.');const last=k.pop();const o=k.reduce((a,x)=>a[x],S);o[last]=v};
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+const sumRows=r=>r.reduce((a,x)=>a+num(x.c),0);
+const nome=i=>S.names[i]&&S.names[i].trim()?S.names[i].trim():'Elemento '+(i+1);
+const I=(p,o={})=>`<input data-p="${p}" type="${o.t||'text'}" ${o.t==='number'?'step="any" inputmode="decimal"':''} value="${esc(getPath(p))}" placeholder="${esc(o.ph||'')}" aria-label="${esc(o.al||o.ph||'campo')}" ${o.c?`class="${o.c}"`:''}>`;
+const TA=(p,ph,rows)=>`<textarea data-p="${p}" rows="${rows||4}" placeholder="${esc(ph||'')}">${esc(getPath(p))}</textarea>`;
+const head=(tag,title,lead)=>`<div class="label">${tag}</div><h2>${title}</h2>${lead?`<p class="lead">${lead}</p>`:''}`;
+const fbHtml=a=>a.map(([k,m])=>`<div class="fb ${k}">${m}</div>`).join('');
+const eq=(a,b)=>Math.abs(a-b)<=0.02;
+
+/* ================= PASSOS ================= */
+function stepIntro(){return `
+<div class="label">Trabalho em pares · Matemática financeira</div>
+<h1>A minha vida a partir dos 18/19 anos</h1>
+<p class="lead" style="margin-top:18px">Acabaste o curso, tens 18/20 anos e acabaste de assinar o teu primeiro contrato de trabalho. Parabéns! Vais ver a cor ao teu próprio dinheirinho.</p>
+<p>Mas a vida real não é só gastar em festivais, roupas e telemóveis. A vida está cara e ninguém consegue sair de casa no primeiro mês a ganhar o salário de entrada. Sair do ninho, ter carro, tirar a carta, viajar ou ter dinheiro de sobra: tudo é uma questão de estratégia e de tempo.</p>
+<div class="sec"><h3>As etapas do jogo</h3>
+<ol class="steps">
+<li><div><b>Escolhe o teu trabalho</b><br>Procura uma oferta real e descobre o que realmente entra no banco.</div></li>
+<li><div><b>Define as tuas prioridades de vida</b><br>Carta, mota, casa, viagens, segurança. Quanto custa cada coisa?</div></li>
+<li><div><b>Usa o simulador</b><br>Testa estratégias ao longo de 36 meses. Pedes crédito ou esperas uns meses a poupar?</div></li>
+<li><div><b>Apresenta o plano</b><br>Teatro, vídeo ou pitch: defendam a vossa linha do tempo de conquistas.</div></li>
+</ol></div>
+<div class="card sec"><h3>Regras do jogo</h3>
+<p><b>Zero ficção. 100% real.</b> Não há números inventados nem "achismos". Cada salário, renda ou despesa tem de ter um link real de mercado (ou QR code) como fonte.</p>
+<p style="margin:0">Nada de cenários irrealistas de "ganhar 10 mil euros a trabalhar 2 horas por dia". O objetivo é aprenderem a dominar o jogo antes que o jogo vos domine a vocês.</p></div>
+<div class="card"><h3>Quem são os dois elementos do par?</h3>
+<div class="grid2"><div><label class="f">Elemento 1</label>${I('names.0',{ph:'Nome',al:'Nome do elemento 1'})}</div>
+<div><label class="f">Elemento 2</label>${I('names.1',{ph:'Nome',al:'Nome do elemento 2'})}</div></div>
+<p class="small" style="margin-top:12px">Tudo o que escreveres fica guardado automaticamente neste computador. No fim, na página «Entrega», podes imprimir ou guardar o trabalho num ficheiro.</p></div>`}
+
+function stepJob(){return `
+${head('Etapa 1 · Get a job','Cada um escolhe a sua profissão de sonho','Procura uma oferta real para essa função e regista o salário base que ela anuncia.')}
+<ol class="steps">
+<li><div>Cada um escolhe a vossa profissão de sonho.</div></li>
+<li><div>Vão a sites como <a href="https://www.net-empregos.com" target="_blank" rel="noopener">Net-Empregos</a>, <a href="https://www.olx.pt" target="_blank" rel="noopener">OLX Empregos</a> ou outro que queiram e procurem uma oferta real para essa função.</div></li>
+<li><div>Não te esqueças de apontar o link para a apresentação oral.</div></li></ol>
+<div class="tw"><table><thead><tr><th>Elemento</th><th>Profissão</th><th>Salário base (€/mês)</th><th>Link da oferta</th></tr></thead><tbody>
+${[0,1].map(i=>`<tr><td style="min-width:130px">${I('names.'+i,{ph:'Elemento '+(i+1),al:'Nome'})}</td><td>${I('jobs.'+i+'.prof',{ph:'Ex: Técnico de redes',al:'Profissão'})}</td><td>${I('jobs.'+i+'.base',{t:'number',ph:'€',al:'Salário base'})}</td><td>${I('jobs.'+i+'.link',{ph:'https://...',al:'Link'})}</td></tr>`).join('')}
+</tbody></table></div>
+<p class="small">Se a oferta indicar um valor anual ou diário, converte-o para valor mensal antes de o registares.</p>`}
+
+function stepSal(){return `
+${head('Etapa 1 · Get a job','O que o patrão promete não é o que entra no banco','O valor que o patrão promete (salário base) não é o que entra no banco (salário líquido). Descobre a diferença entre os dois.')}
+<div class="tw"><table><thead><tr><th>Elemento</th><th>Salário base</th><th>Subsídio refeição</th><th>SS (11%)</th><th>IRS (13,5%)</th><th>Salário líquido</th></tr></thead><tbody>
+${[0,1].map(i=>`<tr><td>${esc(nome(i))}</td><td>${num(S.jobs[i].base)?fmt(num(S.jobs[i].base)):'<span class="small">falta Etapa 1</span>'}</td><td>${I('liq.'+i+'.sub',{t:'number',al:'Subsídio'})}</td><td>${I('liq.'+i+'.ss',{t:'number',ph:'€',al:'Segurança Social'})}</td><td>${I('liq.'+i+'.irs',{t:'number',ph:'€',al:'IRS'})}</td><td>${I('liq.'+i+'.liq',{t:'number',ph:'€',al:'Salário líquido'})}</td></tr>`).join('')}
+</tbody></table></div>
+<details><summary>Preciso de uma pista</summary><p style="margin-top:10px">A Segurança Social e o IRS são percentagens do salário base: calcula cada uma em euros. O subsídio de refeição, neste modelo simplificado, não sofre descontos e soma-se no fim.</p></details>
+<div class="row"><button class="btn acc" data-act="checkSal">Verificar os meus cálculos</button></div>
+<div id="fb-sal"></div>
+<hr class="rule">
+<h3>Rendimentos (entradas) dos dois</h3>
+<div class="row"><div style="max-width:220px">${I('rend',{t:'number',ph:'€ por mês',al:'Rendimento total dos dois'})}</div><span class="small">soma dos dois salários líquidos</span></div>`}
+
+function objTable(k,title,fixed,note){
+  const rows=S.obj[k];
+  return `<h3 style="margin-top:22px">${title}</h3>${note?`<div class="fb info" style="margin-bottom:10px">${note}</div>`:''}<div class="tw"><table><thead><tr><th>Objetivo</th><th>Despesas</th><th>Custo total (€)</th><th>Link / QR</th><th></th></tr></thead><tbody id="tb-${k}">
+${rows.map((r,i)=>{const cont=(k==='com'&&i>0&&!has(r.o));return `<tr class="${cont?'cont':''}"><td>${I('obj.'+k+'.'+i+'.o',{ph:cont?'↳ mesmo objetivo acima':'Objetivo',al:'Objetivo'})}</td><td>${I('obj.'+k+'.'+i+'.d',{ph:'Despesa',al:'Despesa'})}</td><td style="width:130px">${I('obj.'+k+'.'+i+'.c',{t:'number',ph:'€',al:'Custo'})}</td><td>${I('obj.'+k+'.'+i+'.l',{ph:'https://...',al:'Link'})}</td><td>${i>=fixed?`<button class="btn x" data-act="delRow" data-k="${k}" data-a="${i}" aria-label="Remover linha">X</button>`:''}</td></tr>`}).join('')}
+<tr class="tot"><td colspan="2">TOTAL</td><td colspan="3" id="tot-${k}">0,00 €</td></tr></tbody></table></div>
+<button class="btn sec" data-act="addRow" data-k="${k}">+ Adicionar linha</button>`}
+
+function stepObj(){return `
+${head('Etapa 2 · Sonhos e objetivos','Aos 16 anos queres tudo. E agora?','Descobres que tens de escolher o que queres primeiro e calcular quanto tempo demora a chegar lá, sem ficar com a corda pelo pescoço.')}
+<div class="card"><h3>Exemplos de objetivos (não precisam de ser os teus)</h3>
+<table style="min-width:0"><tbody>
+<tr><td><b>Tirar a carta</b></td><td>aproximadamente 900 €</td></tr>
+<tr><td><b>Ter mota ou carro</b></td><td>depende do modelo + custos mensais de combustível</td></tr>
+<tr><td><b>Emancipação parcial</b></td><td>ficar em casa dos pais mas pagar a própria comida, produtos pessoais e partilhar despesas</td></tr>
+<tr><td><b>Viagem de sonho</b></td><td>depende da viagem + hospedagem</td></tr>
+<tr><td><b>Emancipação total</b></td><td>renda + custos da casa (água, luz, gás, net/tv, produtos para a casa)</td></tr>
+<tr><td><b>Segurança</b></td><td>acumular 3 a 6 meses de ordenado para uma urgência</td></tr>
+</tbody></table></div>
+<div class="fb info">Definam objetivos individuais e coletivos. Há um <b>objetivo comum obrigatório</b>: tentar sair da casa dos pais e ir viver os dois juntos, dividindo as despesas a meias.</div>
+${objTable('p0','Objetivos pessoais · '+esc(nome(0)),0)}
+${objTable('p1','Objetivos pessoais · '+esc(nome(1)),0)}
+${objTable('com','Objetivos comuns aos dois',2,'<b>Um objetivo pode ter várias despesas.</b> Escrevam o nome do objetivo na primeira linha e, nas linhas seguintes, deixem o objetivo em branco (aparece «↳ mesmo objetivo acima») para dizer que essa despesa pertence ao objetivo de cima. Exemplo: <b>Emancipação total</b> = renda (linha 1) + despesas fixas da casa, como água, luz, gás e net (linha 2).')}
+<div id="nolink"></div>`}
+
+function stepDesp(){return `
+${head('Etapa 2 · Cálculo das despesas totais','Quanto custa a vida que querem?','Para cada pessoa, soma os custos totais de todos os objetivos e acrescenta o que é obrigatório pagar todos os meses.')}
+<div class="card"><p style="margin:0">Enquanto adulto com emprego, terás sempre de pagar a tua alimentação (aproximadamente 300 a 350 euros mensais) e os teus produtos de higiene e pessoais (aproximadamente 50 a 100 euros mensais). Portanto, <b>soma todos os objetivos e acrescenta 350 a 500 euros mensais</b>.</p></div>
+<div class="tw"><table><thead><tr><th></th><th>Soma objetivos (€)</th><th>Consumo mensal (€)</th><th>Total (€)</th></tr></thead><tbody>
+${[0,1].map(i=>`<tr><td><b>${esc(nome(i))}</b></td><td>${I('desp.'+i+'.soma',{t:'number',al:'Soma dos objetivos'})}</td><td>${I('desp.'+i+'.cons',{t:'number',ph:'350 a 500',al:'Consumo mensal'})}</td><td>${I('desp.'+i+'.tot',{t:'number',al:'Total'})}</td></tr>`).join('')}
+<tr><td><b>Objetivos comuns</b></td><td>${I('desp.2.soma',{t:'number',al:'Soma comuns'})}</td><td style="background:#1c1b19"></td><td>${I('desp.2.tot',{t:'number',al:'Total comuns'})}</td></tr>
+</tbody></table></div>
+<div class="row"><button class="btn acc" data-act="checkDesp">Verificar os meus cálculos</button></div>
+<div id="fb-desp"></div>
+<hr class="rule">
+<h3>Antes de simular: qual é a tua previsão?</h3>
+<p>Olhando só para os números que já tens (rendimentos, objetivos e despesas), achas que conseguem sair de casa dos pais? E em que prazo? Justifica.</p>
+${TA('ref.pred','Escrevam aqui a vossa previsão antes de usar o simulador...',4)}`}
+
+function stepGuia(){return `
+${head('Etapa 3 · Guia rápido','Como usar o simulador','Leiam isto antes de começar a mexer. São três passos e duas ajudas que podem usar sempre que precisarem.')}
+<ol class="steps">
+<li><div><b>Separador 1 · Vida base</b><br>Confirmem o <b>salário líquido</b> (o que entra mesmo no banco, depois dos descontos) e ponham as <b>despesas pessoais obrigatórias</b> de acordo com o que escreveram no separador «Despesas»: alimentação, higiene e transportes.</div></li>
+<li><div><b>Separador 2 · Emancipação</b><br>Escolham o <b>mês em que saem de casa dos pais</b> e ponham a <b>renda</b> e as <b>despesas fixas da casa</b> de acordo com o que colocaram nos objetivos comuns («Emancipação total»).</div></li>
+<li><div><b>Separador 3 · Objetivos</b><br>Vão preenchendo os objetivos individuais e coletivos, com atenção ao <b>timing</b> (o mês em que gastam) e ao <b>custo</b>, para não caírem em saldo negativo — se isso acontecer, voltam para casa dos pais.</div></li>
+</ol>
+<div class="card"><h3>As duas ajudas que têm sempre à mão</h3>
+<div class="tw"><table style="min-width:0"><thead><tr><th>Separador</th><th>O que faz</th><th>O que ter em atenção</th></tr></thead><tbody>
+<tr><td><b>4 · Créditos</b></td><td>Dá-vos dinheiro de uma vez: o saldo sobe no mês em que pedem o empréstimo.</td><td>Nos meses seguintes a despesa aumenta por causa das prestações. No fim, pagam mais do que pediram.</td></tr>
+<tr><td><b>5 · Poupança</b></td><td>Por defeito poupam <b>150 € por mês</b> (linha verde). Podem mudar esse valor em qualquer altura.</td><td>Podem <b>resgatar</b> a poupança: o dinheiro passa da linha verde para a azul e fica disponível para gastar.</td></tr>
+</tbody></table></div></div>
+<div class="card"><h3>Como ler o gráfico</h3>
+<div class="tw"><table style="min-width:0"><tbody>
+<tr><td style="width:26px"><span style="display:inline-block;width:14px;height:14px;background:#1e3a8a"></span></td><td><b>Linha azul — conta à ordem.</b> O dinheiro que está disponível para gastar.</td></tr>
+<tr><td><span style="display:inline-block;width:14px;height:14px;background:#166534"></span></td><td><b>Linha verde — poupança.</b> O dinheiro que guardaram.</td></tr>
+<tr><td><span style="display:inline-block;width:14px;height:14px;background:#b91c1c"></span></td><td><b>Linha vermelha — dívida.</b> Dinheiro que ainda terão de pagar no futuro (as prestações que faltam).</td></tr>
+</tbody></table></div>
+<div class="fb info" style="margin-top:12px">Em qualquer situação, <b>o dinheiro que têm é a soma da linha azul com a linha verde</b>. A linha vermelha não é dinheiro vosso: é o que devem.</div></div>
+<div class="fb ok"><b>O objetivo do jogo:</b> conseguirem realizar todos os sonhos, sem voltar para casa dos pais, e acabar com um <b>saldo ascendente</b>. Se o saldo estiver a descer no fim, é sinal de que, ao fim de mais alguns meses, teriam de voltar para casa dos pais.</div>`}
+
+function stepSim(){const s=S.sim;
+const tabs=[['base','1 · Vida base'],['emanc','2 · Emancipação'],['obj','3 · Objetivos'],['cred','4 · Créditos'],['poup','5 · Poupança']];
+return `
+${head('Etapa 3 · Simulação','Testa estratégias no tempo','Muda as decisões, observa o gráfico e compara cenários. Pedes crédito ou esperas uns meses a poupar?')}
+<div class="fb info">Os valores iniciais vieram do vosso trabalho (rendimento, renda, despesas da casa, consumo e objetivos). Podem alterá-los à vontade. <button class="btn sec" style="padding:4px 10px;font-size:12px" data-act="loadSim">Repor valores do meu trabalho</button></div>
+<div class="simgrid">
+<div>
+ <div class="card">
+  <div class="tabs">${tabs.map(([k,l])=>`<button class="tab ${s.tab===k?'on':''}" data-act="tab" data-a="${k}">${l}</button>`).join('')}</div>
+  <div class="tp ${s.tab==='base'?'on':''}" id="tp-base">
+    <label class="f">Salário líquido combinado (€/mês)</label>${I('sim.salario',{t:'number',al:'Salário líquido combinado'})}
+    <label class="f">Despesas pessoais obrigatórias (alimentação, higiene, transportes) (€/mês)</label>${I('sim.despP',{t:'number',al:'Despesas pessoais'})}
+    <p class="small" style="margin-top:6px">Pagas desde o mês 1, assim que começas a trabalhar.</p>
+  </div>
+  <div class="tp ${s.tab==='emanc'?'on':''}" id="tp-emanc">
+    <label class="f">Mês de emancipação (saída da casa dos pais)</label>
+    <div class="row" style="flex-wrap:nowrap"><input type="range" min="1" max="36" data-p="sim.mesE" value="${esc(s.mesE)}" aria-label="Mês de emancipação" style="flex:1;accent-color:#1e3a8a"><b id="dispMesE" style="min-width:64px">Mês ${esc(s.mesE)}</b></div>
+    <label class="f">Renda mensal (€)</label>${I('sim.renda',{t:'number',al:'Renda'})}
+    <label class="f">Despesas fixas da casa (luz, água, gás, net) (€/mês)</label>${I('sim.despC',{t:'number',al:'Despesas da casa'})}
+    <p class="small" style="margin-top:6px">Só são pagas a partir do mês em que sais de casa. No mês da mudança pagas ainda uma caução de 2 rendas.</p>
+  </div>
+  <div class="tp ${s.tab==='obj'?'on':''}" id="tp-obj">
+    <div class="lbl" style="margin-bottom:6px">Adicionar objetivo (despesa pontual)</div>
+    <div class="grid2"><input id="fo-nome" placeholder="Ex: Mota" aria-label="Nome do objetivo"><input id="fo-valor" type="number" step="50" placeholder="Custo (€)" aria-label="Custo"></div>
+    <div class="grid2" style="margin-top:8px"><div><label class="f" style="margin-top:0">Mês do objetivo</label><input id="fo-mes" type="number" min="1" max="36" value="6"></div><div style="display:flex;align-items:flex-end"><button class="btn full" style="margin:0" data-act="addObj">+ Adicionar</button></div></div>
+    <div class="tw"><table style="min-width:0"><thead><tr><th>Nome</th><th>Mês</th><th>Custo</th><th></th></tr></thead><tbody id="lst-obj"></tbody></table></div>
+    <button class="btn sec" style="font-size:13px" data-act="importObj">Importar os objetivos do meu trabalho</button>
+  </div>
+  <div class="tp ${s.tab==='cred'?'on':''}" id="tp-cred">
+    <div class="lbl" style="margin-bottom:6px">Simular pedido de empréstimo</div>
+    <div class="grid2"><div><label class="f" style="margin-top:0">Mês do pedido</label><input id="fc-mes" type="number" min="1" max="36" value="3"></div><div><label class="f" style="margin-top:0">Valor emprestado (€)</label><input id="fc-valor" type="number" step="100" value="3000"></div></div>
+    <div class="grid2" style="margin-top:8px"><div><label class="f" style="margin-top:0">Mensalidade (€/mês)</label><input id="fc-prest" type="number" step="5" value="110"></div><div><label class="f" style="margin-top:0">Duração (meses)</label><input id="fc-dur" type="number" value="30"></div></div>
+    <button class="btn full" data-act="addCred">+ Registar empréstimo</button>
+    <div class="tw"><table style="min-width:0"><thead><tr><th>Mês</th><th>Recebes</th><th>Prestação</th><th>Pagas no total</th><th></th></tr></thead><tbody id="lst-cred"></tbody></table></div>
+  </div>
+  <div class="tp ${s.tab==='poup'?'on':''}" id="tp-poup">
+    <label class="f" style="margin-top:0">Taxa de juro anual estimada (%)</label>${I('sim.taxa',{t:'number',al:'Taxa de juro'})}
+    <hr class="rule" style="margin:14px 0">
+    <div class="lbl" style="margin-bottom:6px">Definir ou alterar a poupança mensal</div>
+    <div class="grid2"><div><label class="f" style="margin-top:0">A partir do mês</label><input id="fp-mes" type="number" min="1" max="36" value="1"></div><div><label class="f" style="margin-top:0">Novo valor (€/mês)</label><input id="fp-valor" type="number" step="25" value="150"></div></div>
+    <button class="btn full" data-act="addPlano">+ Definir poupança mensal</button>
+    <div class="tw"><table style="min-width:0"><thead><tr><th>A partir do mês</th><th>Valor mensal</th><th></th></tr></thead><tbody id="lst-plano"></tbody></table></div>
+    <hr class="rule" style="margin:14px 0">
+    <div class="lbl" style="margin-bottom:6px">Resgate pontual da poupança</div>
+    <div class="grid2"><div><label class="f" style="margin-top:0">Mês do resgate</label><input id="fr-mes" type="number" min="1" max="36" value="12"></div><div><label class="f" style="margin-top:0">Valor a resgatar (€)</label><input id="fr-valor" type="number" step="50" placeholder="Ex: 500"></div></div>
+    <button class="btn full" data-act="addResg">Agendar resgate</button>
+    <div class="tw"><table style="min-width:0"><thead><tr><th>Mês</th><th>Valor</th><th></th></tr></thead><tbody id="lst-resg"></tbody></table></div>
+  </div>
+ </div>
+ <div class="card">
+  <h3>Cartas de imprevisto</h3>
+  <div class="row"><button class="btn" data-act="carta">Tirar carta</button><button class="btn sec" data-act="semCarta">Remover imprevisto</button></div>
+  <div id="eventLog"></div>
+ </div>
+</div>
+<div>
+ <div class="card">
+  <div class="lbl">Trajetória financeira · 36 meses</div>
+  <div class="chartbox" id="chartbox"><canvas id="flowChart"></canvas></div>
+  <div class="stats">
+   <div><div class="lbl">Conta à ordem (mês 36)</div><div class="n" id="stSaldo" style="color:#1e3a8a">0 €</div></div>
+   <div><div class="lbl">Poupança (mês 36)</div><div class="n" id="stPoup" style="color:#166534">0 €</div></div>
+   <div><div class="lbl">Dívida em aberto</div><div class="n" id="stDiv" style="color:#b91c1c">0 €</div></div>
+   <div><div class="lbl">Pior saldo</div><div class="n" id="stMin">0 €</div><div class="small" id="stMinM"></div></div>
+  </div>
+  <div class="banner" id="banner"></div>
+ </div>
+ <div class="card">
+  <h3>Comparar cenários</h3>
+  <p class="small">Chegaste a uma estratégia que queres guardar? Dá-lhe um nome e regista-a. Depois muda uma decisão (por exemplo, crédito ou sem crédito) e compara.</p>
+  <div class="row"><input id="cenNome" placeholder="Nome do cenário (ex: Com crédito da mota)" style="flex:1;min-width:200px" aria-label="Nome do cenário"><button class="btn acc" data-act="regCen">Registar cenário</button></div>
+  <div id="cen-wrap">${cenTable(true)}</div>
+ </div>
+</div>
+</div>`}
+
+function cenTable(edit){
+  if(!S.cen.length)return '<p class="empty" style="margin-top:10px">Ainda não registaram nenhum cenário.</p>';
+  return `<div class="tw"><table style="min-width:640px"><thead><tr><th>Cenário</th><th>Sai no mês</th><th>Crédito</th><th>Poup./mês</th><th>Saldo final</th><th>Poupança final</th><th>Dívida final</th><th>Pior saldo</th>${edit?'<th></th>':''}</tr></thead><tbody>
+${S.cen.map((c,i)=>`<tr><td><b>${esc(c.nome)}</b></td><td>${c.mesE}</td><td>${fmt0(c.cred)}</td><td>${fmt0(c.pm)}</td><td>${fmt0(c.saldo)}</td><td>${fmt0(c.poup)}</td><td>${fmt0(c.div)}</td><td>${fmt0(c.min)}${c.mesNeg?` <span class="small">(negativo no mês ${c.mesNeg})</span>`:''}</td>${edit?`<td><button class="btn x" data-act="delCen" data-a="${i}" aria-label="Remover cenário">X</button></td>`:''}</tr>`).join('')}
+</tbody></table></div>`}
+
+function stepRef(){return `
+${head('Etapa 3 · Reflexão','O que descobriram com o simulador?','Usem os cenários que registaram para responder. Respostas concretas, com números.')}
+<h3>Os vossos cenários</h3>
+<div id="cen-wrap">${cenTable(true)}</div>
+<label class="f">Qual foi o cenário escolhido pelo par?</label>
+<select data-p="ref.final" aria-label="Cenário escolhido"><option value="">Selecionar...</option>${S.cen.map(c=>`<option value="${esc(c.nome)}" ${S.ref.final===c.nome?'selected':''}>${esc(c.nome)}</option>`).join('')}</select>
+<hr class="rule">
+<div class="card"><label class="f" style="margin-top:0">A vossa previsão antes de simular (Etapa 2) foi confirmada? O que vos surpreendeu?</label>${TA('ref.pred','',4)}</div>
+<label class="f">Porque escolheram esse cenário? Justifiquem com números do simulador.</label>${TA('ref.a','',4)}
+<label class="f">Pedir crédito ou esperar a poupar: o que descobriram quando compararam? Quanto custou, no total, o crédito?</label>${TA('ref.b','',4)}
+<label class="f">Qual foi o imprevisto que mais pesou e como se protegeriam dele?</label>${TA('ref.c','',3)}
+<label class="f">Que objetivo adiaram, reduziram ou eliminaram? Porquê?</label>${TA('ref.d','',3)}`}
+
+function stepApr(){
+const fm=[['teatro','Teatro / Roleplay','A discussão do par a negociar a lista: "Se comprarmos a mota já a crédito, não conseguimos sair da casa dos teus pais este ano!"'],
+['video','Vídeo / Reels (Canva)','Um vídeo curto a mostrar o plano estratégico de emancipação e o simulador a funcionar, sem exposição ao vivo.'],
+['pitch','Pitch direto','Apresentação simples ao quadro da linha do tempo com os cálculos das prioridades e links.']];
+const ck=['Todos os valores têm link ou QR de fonte real','A linha do tempo de conquistas está pronta','O cenário escolhido está justificado com números','Os dois elementos têm uma parte para apresentar'];
+return `
+${head('Etapa 4 · Apresentação','Apresentem a vossa linha do tempo de conquistas','Escolham o formato com que o par vai apresentar o plano.')}
+<div class="opts" role="radiogroup" aria-label="Formato da apresentação">
+${fm.map(([v,t,d])=>`<label><input type="radio" name="fmt" data-p="apr.fmt" value="${v}" ${S.apr.fmt===v?'checked':''}><span><b>${t}</b><span style="padding:6px 0 0;font-size:13px;opacity:.9">${d}</span></span></label>`).join('')}
+</div>
+<label class="f">Guião ou pontos principais da apresentação (3 a 5 pontos)</label>
+${TA('apr.plano','1. Quem somos e que profissões escolhemos...\n2. O que o salário líquido nos mostrou...\n3. A decisão mais difícil do simulador...',7)}
+<h3 style="margin-top:22px">Lista de verificação</h3>
+${ck.map((t,i)=>`<label class="chk"><input type="checkbox" data-p="apr.check.${i}" ${S.apr.check[i]?'checked':''}><span>${t}</span></label>`).join('')}`}
+
+function stepEnd(){
+const sObj=k=>S.obj[k].filter(r=>has(r.o)||has(r.d)||has(r.c));
+const objT=(k,t)=>{const rows=sObj(k);let lastObj='';
+const lbl=r=>{if(has(r.o)){lastObj=r.o;return esc(r.o)}return (k==='com'&&lastObj)?'<span class="small">↳ '+esc(lastObj)+'</span>':''};
+return `<h3 style="margin-top:16px">${t}</h3>${rows.length?`<div class="tw"><table style="min-width:0"><thead><tr><th>Objetivo</th><th>Despesa</th><th>Custo</th><th>Fonte</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${lbl(r)}</td><td>${esc(r.d)}</td><td>${fmt(num(r.c))}</td><td>${r.l?esc(r.l):'<span class="small">sem fonte</span>'}</td></tr>`).join('')}<tr class="tot"><td colspan="2">TOTAL</td><td colspan="2">${fmt(sumRows(S.obj[k]))}</td></tr></tbody></table></div>`:'<p class="empty">Sem registos.</p>'}`;};
+const txt=v=>has(v)?`<div class="pre">${esc(v)}</div>`:'<div class="pre empty">Por responder</div>';
+const fmtName={teatro:'Teatro / Roleplay',video:'Vídeo / Reels',pitch:'Pitch direto'};
+return `
+${head('Entrega','Resumo do trabalho do par','Confirmem tudo, guardem uma cópia e entreguem ao professor.')}
+<div class="card noprint"><h3>Guardar e entregar</h3>
+<div class="row"><button class="btn acc" data-act="print">Imprimir / guardar em PDF</button><button class="btn" data-act="export">Descarregar ficheiro do trabalho</button><button class="btn sec" data-act="import">Abrir um ficheiro guardado</button><button class="btn x" id="btnReset" data-act="reset" style="margin-left:auto">Recomeçar do zero</button></div>
+<p class="small" style="margin:10px 0 0">No diálogo de impressão, escolham «Guardar como PDF». O ficheiro descarregado permite continuar noutro computador.</p></div>
+<div class="card">
+<div class="label">Par</div><h3>${esc(nome(0))} e ${esc(nome(1))}</h3>
+<h3 style="margin-top:18px">Empregos e salários</h3>
+<div class="tw"><table style="min-width:0"><thead><tr><th>Elemento</th><th>Profissão</th><th>Base</th><th>SS</th><th>IRS</th><th>Líquido</th><th>Oferta</th></tr></thead><tbody>
+${[0,1].map(i=>`<tr><td>${esc(nome(i))}</td><td>${esc(S.jobs[i].prof)}</td><td>${has(S.jobs[i].base)?fmt(num(S.jobs[i].base)):''}</td><td>${has(S.liq[i].ss)?fmt(num(S.liq[i].ss)):''}</td><td>${has(S.liq[i].irs)?fmt(num(S.liq[i].irs)):''}</td><td>${has(S.liq[i].liq)?fmt(num(S.liq[i].liq)):''}</td><td>${esc(S.jobs[i].link)}</td></tr>`).join('')}
+<tr class="tot"><td colspan="5">Rendimentos dos dois</td><td colspan="2">${has(S.rend)?fmt(num(S.rend)):''}</td></tr></tbody></table></div>
+${objT('p0','Objetivos de '+esc(nome(0)))}${objT('p1','Objetivos de '+esc(nome(1)))}${objT('com','Objetivos comuns')}
+<h3 style="margin-top:18px">Despesas totais</h3>
+<div class="tw"><table style="min-width:0"><thead><tr><th></th><th>Soma objetivos</th><th>Consumo mensal</th><th>Total</th></tr></thead><tbody>
+${[0,1].map(i=>`<tr><td>${esc(nome(i))}</td><td>${has(S.desp[i].soma)?fmt(num(S.desp[i].soma)):''}</td><td>${has(S.desp[i].cons)?fmt(num(S.desp[i].cons)):''}</td><td>${has(S.desp[i].tot)?fmt(num(S.desp[i].tot)):''}</td></tr>`).join('')}
+<tr><td>Comuns</td><td>${has(S.desp[2].soma)?fmt(num(S.desp[2].soma)):''}</td><td></td><td>${has(S.desp[2].tot)?fmt(num(S.desp[2].tot)):''}</td></tr></tbody></table></div>
+<h3 style="margin-top:18px">Simulação: cenários registados</h3>${cenTable(false)}
+<p style="margin-top:10px"><b>Cenário escolhido:</b> ${S.ref.final?esc(S.ref.final):'<span class="empty">por escolher</span>'}</p>
+<div class="lbl">Previsão inicial</div>${txt(S.ref.pred)}
+<div class="lbl">Porquê este cenário</div>${txt(S.ref.a)}
+<div class="lbl">Crédito ou poupar</div>${txt(S.ref.b)}
+<div class="lbl">Imprevisto e proteção</div>${txt(S.ref.c)}
+<div class="lbl">Objetivo adiado ou eliminado</div>${txt(S.ref.d)}
+<h3 style="margin-top:12px">Apresentação</h3>
+<p><b>Formato:</b> ${S.apr.fmt?fmtName[S.apr.fmt]:'<span class="empty">por escolher</span>'}</p>${txt(S.apr.plano)}
+<p class="small">Lista de verificação: ${S.apr.check.filter(Boolean).length} de 4 itens cumpridos.</p>
+</div>`}
+
+const RENDER=[stepIntro,stepJob,stepSal,stepObj,stepDesp,stepGuia,stepSim,stepRef,stepApr,stepEnd];
+
+/* ================= RENDER ================= */
+function render(){
+  if(chart){chart.destroy();chart=null}
+  if(S.step===6&&!S.simInit){prefillSim();importObj(true);S.simInit=true;save()}
+  $('#app').className='wrap'+(S.step===6?' wide':'');
+  $('#app').innerHTML=RENDER[S.step]()+`<div class="nav noprint"><button class="btn sec" data-act="prev" ${S.step===0?'style="visibility:hidden"':''}>Anterior</button>${S.step<9?`<button class="btn acc" data-act="next">${S.step===5?'Ir para o simulador':S.step===0?'Começar':'Seguinte'}</button>`:'<span></span>'}</div>`;
+  $('#stepper').innerHTML=STEPS.map((l,i)=>`<button class="st ${i===S.step?'on':''} ${i<S.step?'done':''}" data-act="goto" data-a="${i}" aria-label="Passo ${i+1}: ${l}"><b>${i+1}</b><span>${l}</span></button>`).join('');
+  $('#progbar').style.width=(S.step/9*100)+'%';
+  $('#who').textContent=(has(S.names[0])||has(S.names[1]))?nome(0)+' e '+nome(1):'A minha vida a partir dos 18/19 anos';
+  updateLive();
+  if(S.step===6){renderSimLists();showCarta();initChart();runSim()}
+  window.scrollTo(0,0);
+}
+function go(n){S.step=Math.max(0,Math.min(9,n));save();render()}
+
+/* ================= LIVE ================= */
+function updateLive(){
+  ['p0','p1','com'].forEach(k=>{const e=$('#tot-'+k);if(e)e.textContent=fmt(sumRows(S.obj[k]))});
+  const tb=$('#tb-com');
+  if(tb){[...tb.querySelectorAll('tr')].forEach((tr,i)=>{if(tr.classList.contains('tot'))return;
+    const inp=tr.querySelector('input[data-p="obj.com.'+i+'.o"]');
+    const cont=i>0&&inp&&!inp.value.trim();
+    tr.classList.toggle('cont',cont);
+    if(inp)inp.placeholder=cont?'↳ mesmo objetivo acima':'Objetivo'})}
+  const nl=$('#nolink');
+  if(nl){const all=['p0','p1','com'].reduce((a,k)=>a.concat(S.obj[k].filter(r=>num(r.c)>0)),[]);
+    const miss=all.filter(r=>!has(r.l)).length;
+    nl.innerHTML=!all.length?'':miss?`<div class="fb warn">${miss} linha(s) com custo mas sem link ou QR de fonte. Regra do jogo: zero números inventados.</div>`:'<div class="fb ok">Todas as linhas com custo têm fonte.</div>'}
+}
+
+/* ================= VERIFICAÇÕES ================= */
+function checkSal(){
+  const out=[];
+  for(let i=0;i<2;i++){
+    const n=nome(i),base=num(S.jobs[i].base),L=S.liq[i];
+    if(!base){out.push(['warn',`${esc(n)}: preenche primeiro o salário base na Etapa 1.`]);continue}
+    const sub=num(L.sub),ss=num(L.ss),irs=num(L.irs),liq=num(L.liq);
+    if(!has(L.ss))out.push(['warn',`${esc(n)}: falta a Segurança Social.`]);
+    else out.push(eq(ss,base*0.11)?['ok',`${esc(n)}: Segurança Social certa.`]:['bad',`${esc(n)}: Segurança Social não confere. 11% de que valor?`]);
+    if(!has(L.irs))out.push(['warn',`${esc(n)}: falta o IRS.`]);
+    else out.push(eq(irs,base*0.135)?['ok',`${esc(n)}: IRS certo.`]:['bad',`${esc(n)}: IRS não confere. 13,5% de que valor?`]);
+    const exp=base-base*0.11-base*0.135+sub;
+    if(!has(L.liq))out.push(['warn',`${esc(n)}: falta o salário líquido.`]);
+    else if(eq(liq,exp))out.push(['ok',`${esc(n)}: salário líquido certo.`]);
+    else if(eq(liq,base-ss-irs+sub))out.push(['warn',`${esc(n)}: o líquido está coerente com os teus descontos, mas os descontos estão errados.`]);
+    else out.push(['bad',`${esc(n)}: salário líquido não confere. O que sai e o que entra a partir do salário base?`]);
+  }
+  if(has(S.rend)){const t=num(S.liq[0].liq)+num(S.liq[1].liq);out.push(eq(num(S.rend),t)?['ok','Rendimentos dos dois: certo.']:['bad','Rendimentos dos dois não conferem com a soma dos salários líquidos.'])}
+  else out.push(['warn','Falta o rendimento total dos dois.']);
+  $('#fb-sal').innerHTML=fbHtml(out);
+}
+function checkDesp(){
+  const out=[],keys=['p0','p1','com'];
+  for(let i=0;i<3;i++){
+    const n=i<2?nome(i):'Objetivos comuns',D=S.desp[i],soma=sumRows(S.obj[keys[i]]);
+    out.push(!has(D.soma)?['warn',`${esc(n)}: falta a soma dos objetivos.`]:eq(num(D.soma),soma)?['ok',`${esc(n)}: soma dos objetivos certa.`]:['bad',`${esc(n)}: a soma dos objetivos não confere com as tabelas da Etapa 2.`]);
+    if(i<2){
+      if(!has(D.cons))out.push(['warn',`${esc(n)}: falta o consumo mensal.`]);
+      else if(num(D.cons)<350||num(D.cons)>500)out.push(['warn',`${esc(n)}: o consumo mensal devia estar entre 350 e 500 euros.`]);
+      else out.push(['ok',`${esc(n)}: consumo mensal dentro do intervalo.`]);
+      const t=num(D.soma)+num(D.cons);
+      out.push(!has(D.tot)?['warn',`${esc(n)}: falta o total.`]:eq(num(D.tot),t)?['ok',`${esc(n)}: total coerente com os teus valores.`]:['bad',`${esc(n)}: o total não é a soma dos objetivos com o consumo mensal.`]);
+    }else{
+      out.push(!has(D.tot)?['warn','Objetivos comuns: falta o total.']:eq(num(D.tot),num(D.soma))?['ok','Objetivos comuns: total coerente.']:['bad','Objetivos comuns: o total devia ser igual à soma.']);
+    }
+  }
+  $('#fb-desp').innerHTML=fbHtml(out);
+}
+
+/* ================= SIMULADOR ================= */
+const CARTAS=[
+ {texto:'Azar (mês 12): o telemóvel caiu ao chão. Reparação: -180 €',mes:12,valor:-180},
+ {texto:'Azar (mês 15): avaria no carro ou mota. Oficina: -320 €',mes:15,valor:-320},
+ {texto:'Sorte (mês 18): prémio de bom desempenho no trabalho: +250 €',mes:18,valor:250},
+ {texto:'Azar (mês 22): subida na conta da eletricidade de inverno: -90 €',mes:22,valor:-90},
+ {texto:'Sorte (mês 28): venda de material antigo online: +150 €',mes:28,valor:150}];
+function prefillSim(){
+  const s=S.sim,ls=num(S.liq[0].liq)+num(S.liq[1].liq);
+  const sal=num(S.rend)>0?num(S.rend):ls;if(sal>0)s.salario=sal;
+  const c=num(S.desp[0].cons)+num(S.desp[1].cons);if(c>0)s.despP=c;
+  if(num(S.obj.com[0].c)>0)s.renda=num(S.obj.com[0].c);
+  if(num(S.obj.com[1].c)>0)s.despC=num(S.obj.com[1].c);
+}
+function importObj(silent){
+  const list=[];
+  [['p0',0],['p1',0],['com',2]].forEach(([k,from])=>S.obj[k].forEach((r,i)=>{if(i>=from&&num(r.c)>0)list.push({nome:r.o||r.d||'Objetivo',valor:num(r.c)})}));
+  if(!list.length){if(!silent)alert('Ainda não há objetivos com custo na Etapa 2.');return}
+  S.sim.objetivos=list.map((o,i)=>({nome:o.nome,mes:Math.min(36,6*(i+1)),valor:o.valor}));
+  save();if(!silent){renderSimLists();runSim()}
+}
+function planoAtivo(m){let v=0;[...S.sim.planos].sort((a,b)=>a.mes-b.mes).forEach(p=>{if(m>=p.mes)v=p.valor});return v}
+function calcSim(){
+  const s=S.sim,sal=num(s.salario),dp=num(s.despP),mesE=num(s.mesE)||1,renda=num(s.renda),dc=num(s.despC),i=num(s.taxa)/100/12;
+  let saldo=0,poup=0;const at=[],co=[],po=[],di=[];
+  for(let m=1;m<=36;m++){
+    let desp=dp;
+    if(m>=mesE){desp+=renda+dc;if(m===mesE)desp+=renda*2}
+    s.creditos.forEach(c=>{if(c.mes===m){saldo+=c.valor;at.push({p:c.prestacao,r:c.duracao})}});
+    at.forEach(d=>{if(d.r>0){desp+=d.p;d.r-=1}});
+    s.objetivos.forEach(o=>{if(num(o.mes)===m)desp+=num(o.valor)});
+    if(s.carta&&s.carta.mes===m)saldo+=s.carta.valor;
+    saldo+=sal-desp;
+    s.resgates.forEach(r=>{if(r.mes===m){const v=Math.min(r.valor,poup);poup-=v;saldo+=v}});
+    const pm=planoAtivo(m);
+    if(saldo>pm&&pm>0){saldo-=pm;poup+=pm}
+    poup*=(1+i);
+    let pass=0;at.forEach(d=>pass+=d.p*d.r);
+    co.push(Math.round(saldo));po.push(Math.round(poup));di.push(Math.round(pass));
+  }
+  return {co,po,di};
+}
+function initChart(){
+  const box=$('#chartbox');
+  if(typeof Chart==='undefined'){box.innerHTML='<p class="fb bad">Não foi possível carregar a biblioteca de gráficos. Verifica a ligação à Internet e recarrega a página.</p>';return}
+  Chart.defaults.font.family="'Space Grotesk',sans-serif";
+  chart=new Chart($('#flowChart').getContext('2d'),{type:'line',
+    data:{labels:Array.from({length:36},(_,i)=>'Mês '+(i+1)),datasets:[
+      {label:'Conta à ordem (€)',data:[],borderColor:'#1e3a8a',backgroundColor:'rgba(30,58,138,0.10)',fill:true,tension:.2,pointRadius:0},
+      {label:'Poupança (€)',data:[],borderColor:'#166534',borderDash:[6,4],tension:.2,pointRadius:0},
+      {label:'Dívida de crédito (€)',data:[],borderColor:'#b91c1c',borderDash:[2,3],tension:.2,pointRadius:0}]},
+    options:{responsive:true,maintainAspectRatio:false,animation:false,interaction:{mode:'index',intersect:false},
+      plugins:{legend:{position:'bottom'}},
+      scales:{y:{grid:{color:'#e3ddd0'}},x:{grid:{display:false},ticks:{maxTicksLimit:12}}}}});
+}
+function runSim(){
+  if(!$('#flowChart'))return;
+  const d=calcSim();
+  const dm=$('#dispMesE');if(dm)dm.textContent='Mês '+S.sim.mesE;
+  if(chart){chart.data.datasets[0].data=d.co;chart.data.datasets[1].data=d.po;chart.data.datasets[2].data=d.di;chart.update('none')}
+  const saldo=d.co[35],poup=d.po[35],div=d.di[35],min=Math.min(...d.co),mMin=d.co.indexOf(min)+1;
+  const mNeg=d.co.findIndex(v=>v<=0)+1;
+  last={saldo,poup,div,min,mNeg:mNeg||0};
+  $('#stSaldo').textContent=fmt0(saldo);$('#stPoup').textContent=fmt0(poup);$('#stDiv').textContent=fmt0(div);
+  $('#stMin').textContent=fmt0(min);$('#stMin').style.color=min<=0?'#b91c1c':'#1c1b19';
+  $('#stMinM').textContent='no mês '+mMin+(mNeg?' · primeiro mês negativo: '+mNeg:'');
+  const tend=d.co[35]-d.co[30],nObj=S.sim.objetivos.length,mesE=num(S.sim.mesE);
+  const b=$('#banner');let st;
+  if(min<=0&&poup>0)st=['#fbf3e2','#78350f','#b45309','<b>Estás falido na conta à ordem, mas tens poupanças.</b><br>O saldo chegou a zero ou ficou negativo. Vai ao separador 5 (Poupança) e resgata dinheiro para cobrir este buraco.'];
+  else if(min<=0&&poup<=0)st=['#fbeded','#7f1d1d','#b91c1c','<b>Estás a voltar para a casa dos pais.</b><br>O dinheiro acabou e não tinhas poupança para salvar a situação. Arruma as malas.'];
+  else if(tend<-80&&saldo<1000)st=['#fbf3e2','#78350f','#b45309','<b>A continuar assim, voltas para casa dos pais não tarda muito.</b><br>Ainda tens uns euros na conta à ordem, mas a curva está em queda livre.'];
+  else if(tend>=-80&&nObj===0&&mesE>30)st=['#e8ecf8','#1e3a8a','#1e3a8a','<b>Não estás falido, mas também ainda não fizeste nada da tua vida.</b><br>Continuas em casa dos pais e não realizaste nenhum objetivo. O saldo está bonito, mas a vida está parada.'];
+  else st=['#e9f3ec','#14532d','#166534','<b>Estás a conquistar a tua independência.</b><br>Conseguiste equilibrar os sonhos com as contas da casa sem entrar em falência.'];
+  b.style.background=st[0];b.style.color=st[1];b.style.borderColor=st[2];b.innerHTML=st[3];
+}
+function renderSimLists(){
+  const s=S.sim;
+  $('#lst-obj').innerHTML=s.objetivos.length?s.objetivos.map((o,i)=>`<tr><td>${esc(o.nome)}</td><td><input class="sm" type="number" min="1" max="36" data-p="sim.objetivos.${i}.mes" value="${esc(o.mes)}" aria-label="Mês"></td><td>${fmt0(num(o.valor))}</td><td><button class="btn x" data-act="delObj" data-a="${i}">X</button></td></tr>`).join(''):'<tr><td colspan="4" class="empty">Sem objetivos.</td></tr>';
+  $('#lst-cred').innerHTML=s.creditos.length?s.creditos.map((c,i)=>`<tr><td>${c.mes}</td><td>${fmt0(c.valor)}</td><td>${fmt0(c.prestacao)} x ${c.duracao}</td><td>${fmt0(c.prestacao*c.duracao)}</td><td><button class="btn x" data-act="delCred" data-a="${i}">X</button></td></tr>`).join(''):'<tr><td colspan="5" class="empty">Sem créditos.</td></tr>';
+  $('#lst-plano').innerHTML=[...s.planos].sort((a,b)=>a.mes-b.mes).map(p=>`<tr><td>Mês ${p.mes}</td><td>${fmt0(p.valor)}</td><td>${p.mes===1?'<span class="small">base</span>':`<button class="btn x" data-act="delPlano" data-a="${p.mes}">X</button>`}</td></tr>`).join('');
+  $('#lst-resg').innerHTML=s.resgates.length?s.resgates.map((r,i)=>`<tr><td>Mês ${r.mes}</td><td>${fmt0(r.valor)}</td><td><button class="btn x" data-act="delResg" data-a="${i}">X</button></td></tr>`).join(''):'<tr><td colspan="3" class="empty">Sem resgates.</td></tr>';
+}
+function showCarta(){const c=S.sim.carta;$('#eventLog').innerHTML=c?`<div class="fb warn" style="margin-top:12px">${esc(c.texto)}</div>`:''}
+const gv=id=>num($('#'+id).value);
+function afterSim(){save();renderSimLists();runSim()}
+
+/* ================= EVENTOS ================= */
+document.addEventListener('input',e=>{
+  const t=e.target;if(!t.dataset||!t.dataset.p)return;
+  const v=t.type==='checkbox'?t.checked:t.value;
+  setPath(t.dataset.p,v);save();updateLive();
+  if(t.dataset.p.startsWith('sim.'))runSim();
+  if(t.dataset.p==='names.0'||t.dataset.p==='names.1'){$('#who').textContent=nome(0)+' e '+nome(1)}
+});
+document.addEventListener('click',e=>{
+  const b=e.target.closest('[data-act]');if(!b)return;
+  const a=b.dataset.act,x=b.dataset.a,k=b.dataset.k;
+  switch(a){
+    case 'next':go(S.step+1);break;
+    case 'prev':go(S.step-1);break;
+    case 'goto':go(parseInt(x));break;
+    case 'addRow':S.obj[k].push({o:'',d:'',c:'',l:''});save();render();break;
+    case 'delRow':S.obj[k].splice(parseInt(x),1);save();render();break;
+    case 'checkSal':checkSal();break;
+    case 'checkDesp':checkDesp();break;
+    case 'tab':S.sim.tab=x;document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('on',t.dataset.a===x));document.querySelectorAll('.tp').forEach(p=>p.classList.toggle('on',p.id==='tp-'+x));save();break;
+    case 'loadSim':prefillSim();importObj(true);save();render();break;
+    case 'importObj':importObj(false);break;
+    case 'addObj':{const v=gv('fo-valor');if(v>0){S.sim.objetivos.push({nome:$('#fo-nome').value||'Objetivo',mes:Math.min(36,Math.max(1,gv('fo-mes')||1)),valor:v});$('#fo-nome').value='';$('#fo-valor').value='';afterSim()}break}
+    case 'delObj':S.sim.objetivos.splice(parseInt(x),1);afterSim();break;
+    case 'addCred':{const v=gv('fc-valor'),p=gv('fc-prest');if(v>0&&p>0){S.sim.creditos.push({mes:Math.min(36,Math.max(1,gv('fc-mes')||1)),valor:v,prestacao:p,duracao:Math.max(1,Math.round(gv('fc-dur'))||12)});afterSim()}break}
+    case 'delCred':S.sim.creditos.splice(parseInt(x),1);afterSim();break;
+    case 'addPlano':{const m=Math.min(36,Math.max(1,Math.round(gv('fp-mes'))||1)),v=gv('fp-valor');const ex=S.sim.planos.find(p=>p.mes===m);if(ex)ex.valor=v;else S.sim.planos.push({mes:m,valor:v});afterSim();break}
+    case 'delPlano':S.sim.planos=S.sim.planos.filter(p=>p.mes!==parseInt(x));afterSim();break;
+    case 'addResg':{const v=gv('fr-valor');if(v>0){S.sim.resgates.push({mes:Math.min(36,Math.max(1,Math.round(gv('fr-mes'))||1)),valor:v});$('#fr-valor').value='';afterSim()}break}
+    case 'delResg':S.sim.resgates.splice(parseInt(x),1);afterSim();break;
+    case 'carta':S.sim.carta=CARTAS[Math.floor(Math.random()*CARTAS.length)];save();showCarta();runSim();break;
+    case 'semCarta':S.sim.carta=null;save();showCarta();runSim();break;
+    case 'regCen':{if(!last)break;const nm=$('#cenNome').value.trim()||('Cenário '+(S.cen.length+1));
+      S.cen.push({nome:nm,mesE:num(S.sim.mesE),cred:S.sim.creditos.reduce((a,c)=>a+c.valor,0),pm:planoAtivo(36),saldo:last.saldo,poup:last.poup,div:last.div,min:last.min,mesNeg:last.mNeg});
+      $('#cenNome').value='';save();refreshCen();break}
+    case 'delCen':S.cen.splice(parseInt(x),1);save();refreshCen();break;
+    case 'print':window.print();break;
+    case 'export':{const blob=new Blob([JSON.stringify(S,null,1)],{type:'application/json'});const u=URL.createObjectURL(blob);const l=document.createElement('a');l.href=u;l.download='flow_'+(nome(0)+'_'+nome(1)).replace(/[^a-zA-Z0-9_-]/g,'')+'.json';document.body.appendChild(l);l.click();l.remove();setTimeout(()=>URL.revokeObjectURL(u),1000);break}
+    case 'import':$('#fileIn').click();break;
+    case 'reset':if(!resetArm){resetArm=true;b.textContent='Clica outra vez para apagar tudo';setTimeout(()=>{resetArm=false;const r=$('#btnReset');if(r)r.textContent='Recomeçar do zero'},4000)}else{resetArm=false;S=defaults();save();render()}break;
+  }
+});
+function refreshCen(){const w=$('#cen-wrap');if(w&&S.step===6)w.innerHTML=cenTable(true);else render()}
+$('#fileIn').addEventListener('change',e=>{
+  const f=e.target.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=()=>{try{const o=JSON.parse(r.result);S=Object.assign(defaults(),o);S.step=9;save();render()}catch(err){alert('Este ficheiro não é um trabalho FLOW válido.')}};
+  r.readAsText(f);e.target.value='';
+});
+render();
+</script>
+</body>
+</html>
