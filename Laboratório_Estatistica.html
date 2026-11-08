@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laboratório Estatístico - Módulo 2</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- MathJax -->
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        }
+      };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+    <style>
+        body { background-color: #0d1117; color: #c9d1d9; font-family: system-ui, -apple-system, sans-serif; }
+        .step-card { border: 1px solid #30363d; background-color: #161b22; }
+    </style>
+</head>
+<body class="min-h-screen p-4 md:p-8">
+
+    <div class="max-w-5xl mx-auto space-y-6">
+        
+        <!-- PÁGINA ZERO / CABEÇALHO DO GRUPO + OPÇÃO DE GUARDAR JSON -->
+        <header class="step-card p-6 rounded-xl border-l-4 border-l-blue-500 flex justify-between items-center flex-wrap gap-4">
+            <div class="space-y-1">
+                <span class="text-xs uppercase tracking-wider text-blue-400 font-bold">Módulo 2: Estatística Prática</span>
+                <h1 class="text-2xl font-bold text-white flex items-center gap-2">
+                    <i data-lucide="bar-chart-3" class="text-blue-400"></i> Laboratório Estatístico Autónomo
+                </h1>
+                <p class="text-xs text-gray-400">Estudo de 4 Tipos de Variáveis Estatísticas</p>
+            </div>
+            
+            <!-- Identificação do Grupo & Guardar JSON -->
+            <div class="flex flex-col sm:flex-row items-end sm:items-center gap-3 w-full sm:w-auto">
+                <div class="bg-gray-900 p-2.5 rounded-lg border border-gray-700 space-y-1 w-full sm:w-64">
+                    <label class="block text-[10px] uppercase font-bold text-gray-400">Identificação do Grupo / Alunos:</label>
+                    <input type="text" id="header-grupo-nome" placeholder="Ex: Grupo 1 (João e Tiago)" class="w-full bg-gray-800 border border-gray-600 rounded p-1.5 text-xs text-white focus:outline-none focus:border-blue-500">
+                </div>
+                <button onclick="exportarRelatorioJSON()" class="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-500 text-white font-bold p-2.5 rounded-lg text-xs flex items-center justify-center gap-2 transition border border-emerald-500 shadow-md">
+                    <i data-lucide="save" class="w-4 h-4"></i> Guardar Dados (JSON)
+                </button>
+            </div>
+        </header>
+
+        <!-- Indicador de Navegação em Fases -->
+        <div class="grid grid-cols-4 gap-2 text-center text-xs font-semibold">
+            <button onclick="irParaFase(1)" id="badge-1" class="p-2.5 rounded bg-blue-900/50 text-blue-300 border border-blue-500 hover:bg-blue-800/40 transition">1. Perguntas-Alvo (4 Tipos)</button>
+            <button onclick="irParaFase(2)" id="badge-2" class="p-2.5 rounded bg-gray-800 text-gray-400 border border-gray-700 hover:bg-gray-700 transition">2. Mentimeter (Particulares)</button>
+            <button onclick="irParaFase(3)" id="badge-3" class="p-2.5 rounded bg-gray-800 text-gray-400 border border-gray-700 hover:bg-gray-700 transition">3. Tabelas & Gráficos</button>
+            <button onclick="irParaFase(4)" id="badge-4" class="p-2.5 rounded bg-gray-800 text-gray-400 border border-gray-700 hover:bg-gray-700 transition">4. Análise & Conclusões</button>
+        </div>
+
+        <!-- FASE 1: 4 PERGUNTAS-ALVO E INDIVIDUAIS -->
+        <section id="fase-1" class="step-card p-6 rounded-xl space-y-6">
+            <div class="border-b border-gray-800 pb-3">
+                <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                    <span class="bg-blue-600 text-white rounded-full w-7 h-7 flex items-center justify-center text-sm">1</span>
+                    Fase 1: Formulação de 4 Estudos Estatísticos (Um por Tipo de Variável)
+                </h2>
+                <p class="text-xs text-gray-400 mt-1">Nesta fase, cada grupo vai definir a Pergunta-Alvo e a respetiva Pergunta Individual para cada um dos 4 tipos de variáveis estatísticas.</p>
+            </div>
+
+            <!-- 1.1 Qualitativa Nominal -->
+            <div class="bg-gray-900/60 p-5 rounded-lg border border-gray-800 space-y-4">
+                <div class="flex items-center justify-between border-b border-gray-800 pb-2">
+                    <h3 class="text-sm font-bold text-blue-400 flex items-center gap-2">
+                        <i data-lucide="tag"></i> Estudo A: Variável Qualitativa Nominal
+                    </h3>
+                    <span class="text-[10px] bg-blue-950 text-blue-300 px-2 py-0.5 rounded border border-blue-800">Sem Ordem Natural</span>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+                    <div>
+                        <label class="block text-gray-400 mb-1">População de Estudo:</label>
+                        <input type="text" value="Alunos da Turma" readonly class="w-full bg-gray-800 border border-gray-700 rounded p-2 text-gray-300 cursor-not-allowed">
+                    </div>
+                    <div>
+                        <label class="block text-gray-400 mb-1">Parâmetro de Interesse Alvo:</label>
+                        <select id="estudo-a-parametro" class="w-full bg-gray-800 border border-gray-700 rounded p-2 text-white focus:outline-none">
+                            <option value="Moda">Moda ($M_o$) — Categoria mais frequente</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Pergunta de Validação do Tipo -->
+                <div class="bg-gray-950 p-3 rounded border border-gray-800 text-xs space-y-1">
+                    <p class="font-semibold text-yellow-400">Verificação de Validação:</p>
+                    <p class="text-gray-400">As modalidades desta variável aceitam uma ordenação lógica ou hierarquia?</p>
+                    <div class="flex gap-4 pt-1 text-gray-300">
+                        <label><input type="radio" name="valid-a" value="nao" checked> Não (Se não aceitam ordem $\rightarrow$ Nominal ✓)</label>
+                        <label><input type="radio" name="valid-a" value="sim"> Sim (Atenção: Se tem ordem é Ordinal!)</label>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+                    <div>
+                        <label class="block text-gray-400 mb-1">Pergunta-Alvo (Com População e Parâmetro):</label>
+                        <input type="text" id="estudo-a-pergunta" placeholder="Ex: Qual a marca de sapatilhas mais comum (moda) nos alunos da turma?" class="w-full bg-gray-800 border border-gray-700 rounded p-2 text-white focus:outline-none focus:border-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-blue-400 mb-1 font-semibold">Pergunta Individual (Sem População/Parâmetro):</label>
+                        <input type="text" id="estudo-a-pergunta-ind" placeholder="Ex: Qual é a marca das tuas sapatilhas?" class="w-full bg-gray-800 border border-blue-600/60 rounded p-2 text-white focus:outline-none focus:border-blue-500">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+                    <div>
+                        <label class="block text-gray-400 mb-1">Fonte da Variável:</label>
+                        <select id="estudo-a-fonte" class="w-full bg-gray-800 border border-gray-700 rounded p-2 text-white focus:outline-none">
+                            <option value="Simples">Variável Simples (Dado direto)</option>
+                            <option value="Derivada">Variável Derivada (Estimativa/Síntese)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-gray-400 mb-1">Modalidades (separadas por vírgula):</label>
+                        <input type="text" id="estudo-a-modalidades" placeholder="Ex: Nike, Adidas, Puma, Outra" class="w-full bg-gray-800 border border-gray-700 rounded p-2 text-white focus:outline-none">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 1.2 Qualitativa Ordinal -->
+            <div class="bg-gray-900/60 p-5 rounded-lg border border-gray-800 space-y-4">
+                <div class="flex items-center justify-between border-b border-gray-800 pb-2">
+                    <h3 class="text-sm font-bold text-emerald-400 flex items-center gap-2">
+                        <i data-lucide="arrow-up-narrow-wide"></i> Estudo B: Variável Qualitativa Ordinal
+                    </h3>
+                    <span class="text-[10px] bg-emerald-950 text-emerald-300 px-2 py-0.5 rounded border border-emerald-800">Com Ordem / Hierarquia</span>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+                    <div>
+                        <label class="block text-gray-400 mb-1">População de Estudo:</label>
+                        <input type="text" value="Alunos da Turma" readonly class="w-full bg-gray-800 border border-gray-700 rounded p-2 text-gray-300 cursor-not-allowed">
+                    </div>
+                    <div>
+                        <label class="block text-gray-400 mb-1">Parâmetro de Interesse Alvo:</label>
+                        <select id="estudo-b-parametro" class="w-full bg-gray-800 border border-gray-700 rounded p-2 text-white focus:outline-none">
+                            <option value="Moda">Moda ($M_o$) — Opção mais votada</option>
+                            <option value="Mediana">Mediana ($M_e$) — Posição central da ordem</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Pergunta de Validação do Tipo -->
+                <div class="bg-gray-950 p-3 rounded border border-gray-800 text-xs space-y-1">
+                    <p class="font-semibold text-yellow-400">Verificação de Validação:</p>
+                    <p class="text-gray-400">As opções de resposta têm uma ordem natural de intensidade ou nível?</p>
+                    <div class="flex gap-4 pt-1 text-gray-300">
+                        <label><input type="radio" name="valid-b" value="sim" checked> Sim (Ex: Mau, Médio, Bom $\rightarrow$ Ordinal ✓)</label>
+                        <label><input type="radio" name="valid-b" value="nao"> Não (Se não tem ordem é Nominal!)</label>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+                    <div>
+                        <label class="block text-gray-400 mb-1">Pergunta-Alvo (Com População e Parâmetro):</label>
+                        <input type="text" id="estudo-b-pergunta" placeholder="Ex: Qual o nível de satisfação médio/moda dos alunos com o horário?" class="w-full bg-gray-800 border border-gray-700 rounded p-2 text-white focus:outline-none focus:border-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-emerald-400 mb-1 font-semibold">Pergunta Individual (Sem População/Parâmetro):</label>
+                        <input type="text" id="estudo-b-pergunta-ind" placeholder="Ex: Qual é o teu nível de satisfação com o horário?" class="w-full bg-gray-800 border border-emerald-600/60 rounded p-2 text-white focus:outline-none focus:border-blue-500">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+                    <div>
+                        <label class="block text-gray-400 mb-1">Fonte da Variável:</label>
+                        <select id="estudo-b-fonte" class="w-full bg-gray-800 border border-gray-700 rounded p-2 text-white focus:outline-none">
+                            <option value="Simples">Variável Simples (Dado direto)</option>
+                            <option value="Derivada">Variável Derivada (Estimativa/Síntese)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-gray-400 mb-1">Modalidades Ordenadas (separadas por vírgula):</label>
+                        <input type="text" id="estudo-b-modalidades" placeholder="Ex: Insatisfeito, Neutro, Satisfeito" class="w-full bg-gray-800 border border-gray-700 rounded p-2 text-white focus:outline-none">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 1.3 Quantitativa Discreta -->
+            <div class="bg-gray-900/60 p-5 rounded-lg border border-gray-800 space-y-4">
+                <div class="flex items-center justify-between border-b border-gray-800 pb-2">
+                    <h3 class="text-sm font-bold text-purple-400 flex items-center gap-2">
+                        <i data-lucide="binary"></i> Estudo C: Variável Quantitativa Discreta
+                    </h3>
+                    <span class="text-[10px] bg-purple-950 text-purple-300 px-2 py-0.5 rounded border border-purple-800">Contagens / Inteiros</span>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+                    <div>
+                        <label class="block text-gray-400 mb-1">População de Estudo:</label>
+                        <input type="text" value="Alunos da Turma" readonly class="w-full bg-gray-800 border border-gray-700 rounded p-2 text-gray-300 cursor-not-allowed">
+                    </div>
+                    <div>
+                        <label class="block text-gray-400 mb-1">Parâmetro de Interesse Alvo:</label>
+                        <select id="estudo-c-parametro" class="w-full bg-gray-800 border border-gray-700 rounded p-2 text-white focus:outline-none">
+                            <option value="Média">Média ($\bar{x}$)</option>
+                            <option value="Moda">Moda ($M_o$)</option>
+                            <option value="Amplitude">Amplitude / Dispersão ($V_{máx} - V_{mín}$)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Pergunta de Validação do Tipo -->
+                <div class="bg-gray-950 p-3 rounded border border-gray-800 text-xs space-y-1">
+                    <p class="font-semibold text-yellow-400">Verificação de Validação:</p>
+                    <p class="text-gray-400">Os dados resultam de uma contagem direta de números inteiros (sem decimais)?</p>
+                    <div class="flex gap-4 pt-1 text-gray-300">
+                        <label><input type="radio" name="valid-c" value="sim" checked> Sim (Ex: 0, 1, 2 ecrãs $\rightarrow$ Discreta ✓)</label>
+                        <label><input type="radio" name="valid-c" value="nao"> Não (Se aceita decimais é Contínua!)</label>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+                    <div>
+                        <label class="block text-gray-400 mb-1">Pergunta-Alvo (Com População e Parâmetro):</label>
+                        <input type="text" id="estudo-c-pergunta" placeholder="Ex: Qual a média do número de monitores dos alunos da turma?" class="w-full bg-gray-800 border border-gray-700 rounded p-2 text-white focus:outline-none focus:border-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-purple-400 mb-1 font-semibold">Pergunta Individual (Sem População/Parâmetro):</label>
+                        <input type="text" id="estudo-c-pergunta-ind" placeholder="Ex: Quantos monitores tens na tua banca?" class="w-full bg-gray-800 border border-purple-600/60 rounded p-2 text-white focus:outline-none focus:border-blue-500">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+                    <div>
+                        <label class="block text-gray-400 mb-1">Fonte da Variável:</label>
+                        <select id="estudo-c-fonte" class="w-full bg-gray-800 border border-gray-700 rounded p-2 text-white focus:outline-none">
+                            <option value="Simples">Variável Simples (Dado direto)</option>
+                            <option value="Derivada">Variável Derivada (Estimativa/Síntese)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-gray-400 mb-1">Valores Numéricos Possíveis (separados por vírgula):</label>
+                        <input type="text" id="estudo-c-modalidades" placeholder="Ex: 0, 1, 2, 3" class="w-full bg-gray-800 border border-gray-700 rounded p-2 text-white focus:outline-none">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 1.4 Quantitativa Contínua -->
+            <div class="bg-gray-900/60 p-5 rounded-lg border border-gray-800 space-y-4">
+                <div class="flex items-center justify-between border-b border-gray-800 pb-2">
+                    <h3 class="text-sm font-bold text-yellow-400 flex items-center gap-2">
+                        <i data-lucide="ruler"></i> Estudo D: Variável Quantitativa Contínua
+                    </h3>
+                    <span class="text-[10px] bg-yellow-950 text-yellow-300 px-2 py-0.5 rounded border border-yellow-800">Medições / Classes</span>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+                    <div>
+                        <label class="block text-gray-400 mb-1">População de Estudo:</label>
+                        <input type="text" value="Alunos da Turma" readonly class="w-full bg-gray-800 border border-gray-700 rounded p-2 text-gray-300 cursor-not-allowed">
+                    </div>
+                    <div>
+                        <label class="block text-gray-400 mb-1">Parâmetro de Interesse Alvo:</label>
+                        <select id="estudo-d-parametro" class="w-full bg-gray-800 border border-gray-700 rounded p-2 text-white focus:outline-none">
+                            <option value="Média">Média ($\bar{x}$)</option>
+                            <option value="Classe Modal">Classe Modal</option>
+                            <option value="Amplitude">Amplitude / Dispersão ($V_{máx} - V_{mín}$)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Pergunta de Validação do Tipo -->
+                <div class="bg-gray-950 p-3 rounded border border-gray-800 text-xs space-y-1">
+                    <p class="font-semibold text-yellow-400">Verificação de Validação:</p>
+                    <p class="text-gray-400">A variável pode ter valores decimais/intermédios e é agrupada em classes/intervalos?</p>
+                    <div class="flex gap-4 pt-1 text-gray-300">
+                        <label><input type="radio" name="valid-d" value="sim" checked> Sim (Ex: Tempo, Salário $\rightarrow$ Contínua ✓)</label>
+                        <label><input type="radio" name="valid-d" value="nao"> Não (Se só tem inteiros é Discreta!)</label>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+                    <div>
+                        <label class="block text-gray-400 mb-1">Pergunta-Alvo (Com População e Parâmetro):</label>
+                        <input type="text" id="estudo-d-pergunta" placeholder="Ex: Qual a média de horas de sono diárias dos alunos da turma?" class="w-full bg-gray-800 border border-gray-700 rounded p-2 text-white focus:outline-none focus:border-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-yellow-400 mb-1 font-semibold">Pergunta Individual (Sem População/Parâmetro):</label>
+                        <input type="text" id="estudo-d-pergunta-ind" placeholder="Ex: Quantas horas dormes por noite em média?" class="w-full bg-gray-800 border border-yellow-600/60 rounded p-2 text-white focus:outline-none focus:border-blue-500">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+                    <div>
+                        <label class="block text-gray-400 mb-1">Fonte da Variável:</label>
+                        <select id="estudo-d-fonte" class="w-full bg-gray-800 border border-gray-700 rounded p-2 text-white focus:outline-none">
+                            <option value="Derivada">Variável Derivada (Média pessoal estimativa)</option>
+                            <option value="Simples">Variável Simples (Medição direta)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-gray-400 mb-1">Classes / Intervalos (Usar hífen: 0-2, 2-4, 4-6):</label>
+                        <input type="text" id="estudo-d-modalidades" placeholder="Ex: 0-2, 2-4, 4-6, 6-8" class="w-full bg-gray-800 border border-gray-700 rounded p-2 text-white focus:outline-none">
+                    </div>
+                </div>
+            </div>
+
+            <button onclick="irParaFase(2)" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-2.5 px-4 rounded-lg transition flex items-center justify-center gap-2 text-sm">
+                Guardar e Ir para a Fase 2 (Perguntas Mentimeter) <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </button>
+        </section>
+
+        <!-- FASE 2: Formulários Particulares -->
+        <section id="fase-2" class="step-card p-6 rounded-xl space-y-4 hidden">
+            <h2 class="text-xl font-bold text-white flex items-center gap-2 border-b border-gray-800 pb-3">
+                <span class="bg-blue-600 text-white rounded-full w-7 h-7 flex items-center justify-center text-sm">2</span>
+                Fase 2: Perguntas Particulares para o Mentimeter
+            </h2>
+            
+            <div class="bg-blue-900/20 border border-blue-700/50 p-4 rounded-lg text-blue-200 text-xs space-y-2">
+                <p class="font-bold flex items-center gap-2 text-sm text-blue-400">
+                    <i data-lucide="help-circle" class="w-4 h-4"></i> Regra da Pergunta Individual do Inquérito:
+                </p>
+                <p>Nas perguntas feitas aos colegas no Mentimeter, <b>removemos a População e o Parâmetro de Investigação</b>, focando apenas na recolha da variável individual!</p>
+            </div>
+
+            <!-- Resumo das 4 Perguntas Individuais para Copiar -->
+            <div class="bg-gray-900/90 p-4 rounded-lg border border-gray-800 space-y-3 text-xs">
+                <h3 class="font-bold text-white border-b border-gray-800 pb-2">Perguntas a Registar no Mentimeter:</h3>
+                
+                <div class="space-y-2">
+                    <div class="p-2 bg-gray-950 rounded border border-gray-800">
+                        <span class="text-blue-400 font-bold block">Estudo A (Nominal):</span>
+                        <p id="resumo-ind-a" class="text-gray-300 italic">(Por preencher na Fase 1)</p>
+                    </div>
+                    <div class="p-2 bg-gray-950 rounded border border-gray-800">
+                        <span class="text-emerald-400 font-bold block">Estudo B (Ordinal):</span>
+                        <p id="resumo-ind-b" class="text-gray-300 italic">(Por preencher na Fase 1)</p>
+                    </div>
+                    <div class="p-2 bg-gray-950 rounded border border-gray-800">
+                        <span class="text-purple-400 font-bold block">Estudo C (Discreta):</span>
+                        <p id="resumo-ind-c" class="text-gray-300 italic">(Por preencher na Fase 1)</p>
+                    </div>
+                    <div class="p-2 bg-gray-950 rounded border border-gray-800">
+                        <span class="text-yellow-400 font-bold block">Estudo D (Contínua):</span>
+                        <p id="resumo-ind-d" class="text-gray-300 italic">(Por preencher na Fase 1)</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex justify-between items-center pt-2">
+                <button onclick="irParaFase(1)" class="bg-gray-800 hover:bg-gray-700 text-gray-300 font-semibold py-2 px-4 rounded text-xs">Voltar</button>
+                <button onclick="irParaFase(3)" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-2.5 px-4 rounded-lg text-sm flex items-center gap-2">
+                    Ir para Tabelas & Gráficos <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- FASE 3: DIVIDIDA EM 4 PARTES -->
+        <section id="fase-3" class="step-card p-6 rounded-xl space-y-4 hidden">
+            <div class="border-b border-gray-800 pb-3 flex justify-between items-center flex-wrap gap-2">
+                <div>
+                    <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                        <span class="bg-blue-600 text-white rounded-full w-7 h-7 flex items-center justify-center text-sm">3</span>
+                        Fase 3: Tabelas de Frequências & Gráficos
+                    </h2>
+                    <p class="text-xs text-gray-400 mt-1">Seleciona o sub-separador do estudo para introduzir os dados do Mentimeter.</p>
+                </div>
+            </div>
+
+            <!-- Sub-Navegação para 4 Estudos na Fase 3 -->
+            <div class="grid grid-cols-4 gap-2 text-center text-xs font-semibold">
+                <button onclick="mudarEstudoFase3('A')" id="subtab-3-A" class="p-2 rounded bg-blue-600 text-white border border-blue-500">Estudo A (Nominal)</button>
+                <button onclick="mudarEstudoFase3('B')" id="subtab-3-B" class="p-2 rounded bg-gray-800 text-gray-400 border border-gray-700">Estudo B (Ordinal)</button>
+                <button onclick="mudarEstudoFase3('C')" id="subtab-3-C" class="p-2 rounded bg-gray-800 text-gray-400 border border-gray-700">Estudo C (Discreta)</button>
+                <button onclick="mudarEstudoFase3('D')" id="subtab-3-D" class="p-2 rounded bg-gray-800 text-gray-400 border border-gray-700">Estudo D (Contínua)</button>
+            </div>
+
+            <!-- Container do Conteúdo Dinâmico da Fase 3 -->
+            <div class="bg-gray-900/50 p-5 rounded-lg border border-gray-800 space-y-4">
+                <h3 id="fase3-estudo-titulo" class="text-sm font-bold text-white flex items-center gap-2">
+                    <i data-lucide="edit"></i> Introduzir Dados de Votos
+                </h3>
+
+                <div id="caixas-votos-dinamicas" class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <!-- Gerado dinamicamente -->
+                </div>
+
+                <button onclick="processarEstudoAtual()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 px-4 rounded-lg transition flex items-center justify-center gap-2 text-sm mt-4">
+                    <i data-lucide="table" class="w-4 h-4"></i> Construir Tabela de Frequências & Gráfico
+                </button>
+
+                <!-- Área da Tabela e Gráfico do Estudo Atual -->
+                <div id="area-resultado-fase3" class="hidden space-y-4 pt-4 border-t border-gray-800">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-xs text-left text-gray-300 border border-gray-800">
+                            <thead class="bg-gray-900 text-gray-400 uppercase text-[10px]">
+                                <tr>
+                                    <th class="p-2 border-b border-gray-800">Modalidade / Classe ($x_i$)</th>
+                                    <th class="p-2 border-b border-gray-800">Freq. Absoluta ($n_i$)</th>
+                                    <th class="p-2 border-b border-gray-800">Freq. Relativa ($f_i$)</th>
+                                    <th class="p-2 border-b border-gray-800">Percentagem (%)</th>
+                                    <th class="p-2 border-b border-gray-800">Freq. Abs. Acumulada ($N_i$)</th>
+                                    <th class="p-2 border-b border-gray-800">Freq. Rel. Acumulada ($F_i$)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="linhas-tabela-dinamica">
+                                <!-- JS preenche aqui -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div id="aviso-acumulada-dinamico" class="text-[11px] text-yellow-400 italic hidden">
+                        * Frequências Acumuladas ($N_i, F_i$) desativadas por ser uma Variável Qualitativa Nominal (dados sem ordem natural).
+                    </div>
+
+                    <div class="space-y-2 pt-2">
+                        <h4 class="text-xs font-bold text-white">Gráfico Estatístico Gerado:</h4>
+                        <div class="h-64 bg-gray-900/80 p-4 rounded-lg border border-gray-800">
+                            <canvas id="graficoFase3"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button onclick="irParaFase(4)" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-2.5 px-4 rounded-lg text-sm flex items-center justify-center gap-2">
+                Ir para Análise & Conclusões (Fase 4) <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </button>
+        </section>
+
+        <!-- FASE 4: DIVIDIDA EM 4 PARTES -->
+        <section id="fase-4" class="step-card p-6 rounded-xl space-y-4 hidden">
+            <div class="border-b border-gray-800 pb-3 flex justify-between items-center flex-wrap gap-2">
+                <div>
+                    <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                        <span class="bg-blue-600 text-white rounded-full w-7 h-7 flex items-center justify-center text-sm">4</span>
+                        Fase 4: Análise de Medidas & Reflexão de Amostragem
+                    </h2>
+                    <p class="text-xs text-gray-400 mt-1">Consulta as estatísticas dos 4 estudos e responde à reflexão crítica.</p>
+                </div>
+            </div>
+
+            <!-- Sub-Navegação para 4 Estudos na Fase 4 -->
+            <div class="grid grid-cols-4 gap-2 text-center text-xs font-semibold">
+                <button onclick="mudarEstudoFase4('A')" id="subtab-4-A" class="p-2 rounded bg-blue-600 text-white border border-blue-500">Análise A</button>
+                <button onclick="mudarEstudoFase4('B')" id="subtab-4-B" class="p-2 rounded bg-gray-800 text-gray-400 border border-gray-700">Análise B</button>
+                <button onclick="mudarEstudoFase4('C')" id="subtab-4-C" class="p-2 rounded bg-gray-800 text-gray-400 border border-gray-700">Análise C</button>
+                <button onclick="mudarEstudoFase4('D')" id="subtab-4-D" class="p-2 rounded bg-gray-800 text-gray-400 border border-gray-700">Análise D</button>
+            </div>
+
+            <!-- Painel da Análise do Estudo Selecionado -->
+            <div class="bg-gray-900/50 p-5 rounded-lg border border-gray-800 space-y-4">
+                <h3 id="fase4-estudo-titulo" class="text-sm font-bold text-white">Estatísticas do Estudo Selecionado</h3>
+                
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-center">
+                    <div class="bg-gray-900 p-3 rounded border border-gray-800">
+                        <span class="text-[10px] text-gray-400 uppercase block font-semibold">Moda / Cl. Modal ($M_o$)</span>
+                        <span id="fase4-stat-moda" class="text-base font-bold text-emerald-400">-</span>
+                    </div>
+                    <div class="bg-gray-900 p-3 rounded border border-gray-800">
+                        <span class="text-[10px] text-gray-400 uppercase block font-semibold">Média ($\bar{x}$)</span>
+                        <span id="fase4-stat-media" class="text-base font-bold text-purple-400">-</span>
+                    </div>
+                    <div class="bg-gray-900 p-3 rounded border border-gray-800">
+                        <span class="text-[10px] text-gray-400 uppercase block font-semibold">Mediana ($M_e$)</span>
+                        <span id="fase4-stat-mediana" class="text-base font-bold text-blue-400">-</span>
+                    </div>
+                    <div class="bg-gray-900 p-3 rounded border border-gray-800">
+                        <span class="text-[10px] text-gray-400 uppercase block font-semibold">Total Amostral ($N$)</span>
+                        <span id="fase4-stat-total" class="text-base font-bold text-yellow-400">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reflexão Geral de Amostragem -->
+            <div class="bg-gray-900/60 p-4 rounded-lg border border-gray-800 space-y-3 text-xs text-gray-300">
+                <h3 class="font-bold text-white text-sm border-b border-gray-800 pb-2">Reflexão Geral de Amostragem & Validação</h3>
+                
+                <div class="space-y-1">
+                    <p class="font-semibold text-white">1. Amostragem e Representatividade:</p>
+                    <p class="text-gray-400">Se o Diretor quisesse usar os teus 4 estudos para concluir sobre **toda a escola** (2500 alunos), usar apenas a vossa turma seria correto?</p>
+                    <select id="ref-amostra-escola" class="w-full bg-gray-800 border border-gray-700 rounded p-2 text-white focus:outline-none">
+                        <option value="">Selecione a resposta...</option>
+                        <option value="enviesada">Não, seria uma amostra por conveniência (enviesada), pois alunos de cursos diferentes têm hábitos e expetativas distintas.</option>
+                        <option value="representativa">Sim, a nossa turma representa perfeitamente toda a escola.</option>
+                    </select>
+                </div>
+            </div>
+
+            <button onclick="exportarRelatorioJSON()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-4 rounded-lg text-xs flex items-center justify-center gap-2">
+                <i data-lucide="download" class="w-4 h-4"></i> Descarregar Relatório JSON Final (Google Classroom)
+            </button>
+
+            <div id="mensagem-final" class="hidden p-4 bg-emerald-950/60 border border-emerald-600/50 rounded-lg text-emerald-200 text-center text-xs font-semibold">
+                🎉 Ficheiro JSON com os 4 estudos descarregado com sucesso! Submete o ficheiro no Google Classroom.
+            </div>
+        </section>
+
+    </div>
+
+    <script>
+        lucide.createIcons();
+        
+        let estudoAtualFase3 = 'A';
+        let estudoAtualFase4 = 'A';
+        let chartInstanceFase3 = null;
+
+        // Estrutura de dados para armazenar os 4 estudos
+        const dadosEstudos = {
+            'A': { tipo: 'Qualitativa Nominal', modalidades: [], votos: {}, tabela: [], estatisticas: {} },
+            'B': { tipo: 'Qualitativa Ordinal', modalidades: [], votos: {}, tabela: [], estatisticas: {} },
+            'C': { tipo: 'Quantitativa Discreta', modalidades: [], votos: {}, tabela: [], estatisticas: {} },
+            'D': { tipo: 'Quantitativa Contínua', modalidades: [], votos: {}, tabela: [], estatisticas: {} }
+        };
+
+        function irParaFase(fase) {
+            for(let i=1; i<=4; i++) {
+                document.getElementById(`fase-${i}`).classList.add('hidden');
+                document.getElementById(`badge-${i}`).className = "p-2.5 rounded bg-gray-800 text-gray-400 border border-gray-700 hover:bg-gray-700 transition";
+            }
+            
+            document.getElementById(`fase-${fase}`).classList.remove('hidden');
+            document.getElementById(`badge-${fase}`).className = "p-2.5 rounded bg-blue-900/50 text-blue-300 border border-blue-500 hover:bg-blue-800/40 transition";
+
+            if(fase === 2) atualizarResumoFase2();
+            if(fase === 3) mudarEstudoFase3(estudoAtualFase3);
+            if(fase === 4) mudarEstudoFase4(estudoAtualFase4);
+
+            if (window.MathJax) {
+                MathJax.typesetPromise();
+            }
+        }
+
+        function atualizarResumoFase2() {
+            document.getElementById('resumo-ind-a').innerText = document.getElementById('estudo-a-pergunta-ind').value || '(Por preencher na Fase 1)';
+            document.getElementById('resumo-ind-b').innerText = document.getElementById('estudo-b-pergunta-ind').value || '(Por preencher na Fase 1)';
+            document.getElementById('resumo-ind-c').innerText = document.getElementById('estudo-c-pergunta-ind').value || '(Por preencher na Fase 1)';
+            document.getElementById('resumo-ind-d').innerText = document.getElementById('estudo-d-pergunta-ind').value || '(Por preencher na Fase 1)';
+        }
+
+        // FASE 3: Mudar entre Estudos A, B, C, D
+        function mudarEstudoFase3(estudo) {
+            estudoAtualFase3 = estudo;
+            ['A', 'B', 'C', 'D'].forEach(e => {
+                const btn = document.getElementById(`subtab-3-${e}`);
+                btn.className = (e === estudo) ? "p-2 rounded bg-blue-600 text-white border border-blue-500" : "p-2 rounded bg-gray-800 text-gray-400 border border-gray-700";
+            });
+
+            const modTexto = document.getElementById(`estudo-${estudo.toLowerCase()}-modalidades`).value;
+            const container = document.getElementById('caixas-votos-dinamicas');
+            container.innerHTML = '';
+
+            const mods = modTexto.split(',').map(s => s.trim()).filter(s => s.length > 0);
+            dadosEstudos[estudo].modalidades = mods;
+
+            if(mods.length === 0) {
+                container.innerHTML = `<p class="text-xs text-red-400 col-span-2">Preenche as modalidades do Estudo ${estudo} na Fase 1 primeiro!</p>`;
+                return;
+            }
+
+            mods.forEach(mod => {
+                const valExistente = dadosEstudos[estudo].votos[mod] || 0;
+                container.innerHTML += `
+                    <div class="bg-gray-900/80 p-3 rounded border border-gray-800">
+                        <label class="block text-xs text-gray-300 font-semibold mb-1">${mod}</label>
+                        <input type="number" min="0" value="${valExistente}" class="input-voto-dinamico w-full bg-gray-800 border border-gray-700 rounded p-1.5 text-xs text-white focus:outline-none" data-mod="${mod}">
+                    </div>
+                `;
+            });
+        }
+
+        // Processar Dados da Fase 3 para o Estudo Atual
+        function processarEstudoAtual() {
+            const estudo = estudoAtualFase3;
+            const inputs = document.querySelectorAll('.input-voto-dinamico');
+            let total = 0;
+            const itens = [];
+
+            inputs.forEach(inp => {
+                const mod = inp.getAttribute('data-mod');
+                const v = parseInt(inp.value) || 0;
+                dadosEstudos[estudo].votos[mod] = v;
+                total += v;
+                itens.push({ mod, v });
+            });
+
+            if(total === 0) {
+                alert("Insere os votos recolhidos!");
+                return;
+            }
+
+            const tbody = document.getElementById('linhas-tabela-dinamica');
+            tbody.innerHTML = '';
+            let acAbs = 0;
+            let acRel = 0;
+            const eNominal = (estudo === 'A');
+
+            document.getElementById('aviso-acumulada-dinamico').classList.toggle('hidden', !eNominal);
+
+            let maxV = -1;
+            let moda = [];
+            let somaNum = 0;
+            let eNum = (estudo === 'C' || estudo === 'D');
+
+            itens.forEach(item => {
+                const n_i = item.v;
+                const f_i = n_i / total;
+                const pct = f_i * 100;
+                acAbs += n_i;
+                acRel += f_i;
+
+                if(n_i > maxV && n_i > 0) { maxV = n_i; moda = [item.mod]; }
+                else if(n_i === maxV && n_i > 0) { moda.push(item.mod); }
+
+                // Tratamento numérico (se classe tipo 0-2, calcula ponto médio)
+                let valNum = NaN;
+                if(item.mod.includes('-')) {
+                    const partes = item.mod.split('-').map(p => parseFloat(p.replace(',', '.')));
+                    if(partes.length === 2 && !isNaN(partes[0]) && !isNaN(partes[1])) {
+                        valNum = (partes[0] + partes[1]) / 2;
+                    }
+                } else {
+                    valNum = parseFloat(item.mod.replace(',', '.'));
+                }
+
+                if(!isNaN(valNum)) somaNum += valNum * n_i;
+
+                tbody.innerHTML += `
+                    <tr class="border-b border-gray-800/50">
+                        <td class="p-2 font-semibold text-white">${item.mod}</td>
+                        <td class="p-2">${n_i}</td>
+                        <td class="p-2">${f_i.toFixed(3)}</td>
+                        <td class="p-2">${pct.toFixed(1)}%</td>
+                        <td class="p-2">${eNominal ? '-' : acAbs}</td>
+                        <td class="p-2">${eNominal ? '-' : acRel.toFixed(3)}</td>
+                    </tr>
+                `;
+            });
+
+            dadosEstudos[estudo].estatisticas = {
+                moda: moda.join(', ') || 'N/A',
+                media: eNum ? (somaNum / total).toFixed(2) : 'N/A',
+                mediana: eNum ? (total/2).toFixed(0) + 'º item' : 'N/A',
+                total: total
+            };
+
+            // Desenhar Gráfico
+            const ctx = document.getElementById('graficoFase3').getContext('2d');
+            if(chartInstanceFase3) chartInstanceFase3.destroy();
+
+            chartInstanceFase3 = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: itens.map(i => i.mod),
+                    datasets: [{
+                        label: 'Votos',
+                        data: itens.map(i => i.v),
+                        backgroundColor: '#3b82f6',
+                        categoryPercentage: (estudo === 'D') ? 1.0 : 0.8,
+                        barPercentage: (estudo === 'D') ? 1.0 : 0.9
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { y: { beginAtZero: true } }
+                }
+            });
+
+            document.getElementById('area-resultado-fase3').classList.remove('hidden');
+            if (window.MathJax) MathJax.typesetPromise();
+        }
+
+        // FASE 4: Mudar entre Estudos A, B, C, D
+        function mudarEstudoFase4(estudo) {
+            estudoAtualFase4 = estudo;
+            ['A', 'B', 'C', 'D'].forEach(e => {
+                const btn = document.getElementById(`subtab-4-${e}`);
+                btn.className = (e === estudo) ? "p-2 rounded bg-blue-600 text-white border border-blue-500" : "p-2 rounded bg-gray-800 text-gray-400 border border-gray-700";
+            });
+
+            const st = dadosEstudos[estudo].estatisticas;
+            document.getElementById('fase4-estudo-titulo').innerText = `Estatísticas do Estudo ${estudo} (${dadosEstudos[estudo].tipo})`;
+            document.getElementById('fase4-stat-moda').innerText = st.moda || '-';
+            document.getElementById('fase4-stat-media').innerText = st.media || '-';
+            document.getElementById('fase4-stat-mediana').innerText = st.mediana || '-';
+            document.getElementById('fase4-stat-total').innerText = st.total || '0';
+        }
+
+        // Exportação Completa dos 4 Estudos para Ficheiro JSON
+        function exportarRelatorioJSON() {
+            const relatorio = {
+                metadata: {
+                    grupo: document.getElementById('header-grupo-nome').value || 'Sem_Nome',
+                    data: new Date().toISOString()
+                },
+                estudos: {
+                    estudo_A: {
+                        pergunta_alvo: document.getElementById('estudo-a-pergunta').value,
+                        pergunta_individual: document.getElementById('estudo-a-pergunta-ind').value,
+                        dados: dadosEstudos['A']
+                    },
+                    estudo_B: {
+                        pergunta_alvo: document.getElementById('estudo-b-pergunta').value,
+                        pergunta_individual: document.getElementById('estudo-b-pergunta-ind').value,
+                        dados: dadosEstudos['B']
+                    },
+                    estudo_C: {
+                        pergunta_alvo: document.getElementById('estudo-c-pergunta').value,
+                        pergunta_individual: document.getElementById('estudo-c-pergunta-ind').value,
+                        dados: dadosEstudos['C']
+                    },
+                    estudo_D: {
+                        pergunta_alvo: document.getElementById('estudo-d-pergunta').value,
+                        pergunta_individual: document.getElementById('estudo-d-pergunta-ind').value,
+                        dados: dadosEstudos['D']
+                    }
+                },
+                reflexao_amostragem: document.getElementById('ref-amostra-escola').value
+            };
+
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(relatorio, null, 2));
+            const dl = document.createElement('a');
+            dl.setAttribute("href", dataStr);
+            dl.setAttribute("download", `Relatorio_4Estudos_${relatorio.metadata.grupo.replace(/\s+/g, '_')}.json`);
+            document.body.appendChild(dl);
+            dl.click();
+            dl.remove();
+
+            const msg = document.getElementById('mensagem-final');
+            if(msg) msg.classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
