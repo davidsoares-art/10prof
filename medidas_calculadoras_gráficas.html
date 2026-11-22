@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guião Prático: Calculadoras Gráficas - Estatística</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background-color: #0b1120;
+            color: #e2e8f0;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.5;
+            padding: 20px;
+        }
+        .container { max-width: 1050px; margin: 0 auto; }
+        
+        /* Cabeçalho */
+        header {
+            background-color: #162032;
+            border: 1px solid #2a3950;
+            border-left: 5px solid #06b6d4;
+            border-radius: 14px;
+            padding: 20px 24px;
+            margin-bottom: 18px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+        }
+        .badge-top { color: #22d3ee; font-size: 12px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
+        h1 { color: #ffffff; font-size: 24px; margin: 4px 0; }
+        .subtitle { color: #94a3b8; font-size: 13px; }
+
+        /* Seletor de Modo Principal */
+        .mode-switch {
+            display: flex;
+            gap: 10px;
+            background-color: #0f172a;
+            padding: 6px;
+            border-radius: 12px;
+            border: 1px solid #334155;
+        }
+        .mode-btn {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 13px;
+            cursor: pointer;
+            background: transparent;
+            color: #94a3b8;
+            transition: all 0.2s;
+        }
+        .mode-btn.active {
+            background-color: #06b6d4;
+            color: #0f172a;
+        }
+
+        /* Barras de Separadores (Sub-menus) */
+        .tabs-bar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+        .tabs-bar.hidden { display: none; }
+
+        .tab-btn {
+            background-color: #1e293b;
+            color: #cbd5e1;
+            border: 1px solid #334155;
+            padding: 11px 10px;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+        .tab-btn:hover { background-color: #334155; color: #ffffff; }
+        .tab-btn.active-cyan {
+            background-color: #0891b2;
+            color: #ffffff;
+            border-color: #22d3ee;
+            box-shadow: 0 4px 12px rgba(6, 182, 212, 0.25);
+        }
+        .tab-btn.active-purple {
+            background-color: #7c3aed;
+            color: #ffffff;
+            border-color: #a78bfa;
+            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.25);
+        }
+
+        /* Conteúdo das Páginas */
+        .page { display: none; }
+        .page.active { display: block; }
+
+        .card {
+            background-color: #162032;
+            border: 1px solid #2a3950;
+            border-radius: 14px;
+            padding: 24px;
+        }
+        .card-header {
+            border-bottom: 1px solid #2a3950;
+            padding-bottom: 14px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .tag {
+            font-size: 11px;
+            font-weight: bold;
+            padding: 3px 8px;
+            border-radius: 5px;
+            text-transform: uppercase;
+            display: inline-block;
+            margin-bottom: 5px;
+        }
+        .tag-cyan { background: #164e63; color: #67e8f9; border: 1px solid #0e7490; }
+        .tag-amber { background: #78350f; color: #fcd34d; border: 1px solid #b45309; }
+        .tag-rose { background: #881337; color: #fda4af; border: 1px solid #be123c; }
+        .tag-orange { background: #7c2d12; color: #fdba74; border: 1px solid #c2410c; }
+        .tag-purple { background: #4c1d95; color: #ddd6fe; border: 1px solid #6d28d9; }
+
+        /* Blocos de Passos e Casos */
+        .step-grid {
+            display: grid;
+            grid-template-columns: 1.15fr 0.85fr;
+            gap: 20px;
+            background-color: #0f172a;
+            border: 1px solid #1e293b;
+            border-radius: 12px;
+            padding: 18px;
+            margin-bottom: 18px;
+            align-items: center;
+        }
+        .step-full {
+            background-color: #0f172a;
+            border: 1px solid #1e293b;
+            border-radius: 12px;
+            padding: 18px;
+            margin-bottom: 18px;
+        }
+        .cases-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        .case-box {
+            background-color: #0f172a;
+            border: 1px solid #334155;
+            border-top: 4px solid #06b6d4;
+            border-radius: 12px;
+            padding: 16px;
+        }
+        .case-box.amber { border-top-color: #f59e0b; }
+        .case-box.emerald { border-top-color: #10b981; }
+
+        @media (max-width: 768px) {
+            .step-grid { grid-template-columns: 1fr; }
+        }
+
+        h3 { font-size: 16px; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+        .num-badge {
+            width: 24px; height: 24px; border-radius: 50%;
+            display: inline-flex; align-items: center; justify-content: center;
+            font-size: 12px; font-weight: bold; color: white; flex-shrink: 0;
+        }
+        ol { padding-left: 20px; font-size: 13px; color: #cbd5e1; }
+        ol li { margin-bottom: 7px; }
+        ul { padding-left: 18px; margin-top: 4px; color: #94a3b8; font-size: 13px; }
+        ul li { margin-bottom: 5px; }
+
+        /* Teclas da Calculadora */
+        .kbd {
+            background-color: #1e293b;
+            border: 1px solid #475569;
+            border-bottom-width: 3px;
+            border-radius: 5px;
+            padding: 1px 6px;
+            font-family: monospace;
+            font-size: 12px;
+            font-weight: bold;
+            color: #f8fafc;
+            display: inline-block;
+        }
+        .kbd-blue { background-color: #1d4ed8; border-color: #1e3a8a; }
+        .kbd-yellow { background-color: #ca8a04; border-color: #854d0e; }
+
+        .svg-wrap { display: flex; justify-content: center; }
+        svg { max-width: 100%; height: auto; border-radius: 10px; border: 2px solid #475569; }
+
+        /* Tabelas */
+        table { width: 100%; border-collapse: collapse; font-size: 13px; margin: 10px 0; }
+        th, td { padding: 8px 10px; border: 1px solid #334155; text-align: left; }
+        th { background-color: #1e293b; color: #cbd5e1; font-size: 11px; text-transform: uppercase; }
+        tr:nth-child(even) { background-color: #111827; }
+        .mono { font-family: monospace; font-weight: bold; }
+
+        .alert-box {
+            background-color: #1e293b;
+            border-left: 4px solid #f59e0b;
+            padding: 12px 15px;
+            border-radius: 8px;
+            font-size: 13px;
+            margin-top: 12px;
+            color: #e2e8f0;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- CABEÇALHO E SELETOR DE MODO -->
+    <header>
+        <div>
+            <div class="badge-top">Módulo P2 • Estatística • Guia Tecnológico</div>
+            <h1>🧮 Guião das Calculadoras Gráficas</h1>
+            <div class="subtitle">Medidas de Localização, Diagrama de Extremos e Quartis e Dispersão</div>
+        </div>
+        <div class="mode-switch">
+            <button class="mode-btn active" id="mode-btn-calc" onclick="mudarModo('calc')">📱 Por Calculadora</button>
+            <button class="mode-btn" id="mode-btn-med" onclick="mudarModo('med')">📊 Por Medida</button>
+        </div>
+    </header>
+
+    <!-- MENU 1: SEPARADORES POR CALCULADORA -->
+    <nav class="tabs-bar" id="nav-calc">
+        <button class="tab-btn active-cyan" id="btn-casio" onclick="abrirPagina('casio', 'calc')">CASIO fx-CG50</button>
+        <button class="tab-btn" id="btn-ti84" onclick="abrirPagina('ti84', 'calc')">TI-84 Plus C</button>
+        <button class="tab-btn" id="btn-nspire" onclick="abrirPagina('nspire', 'calc')">TI-Nspire CX</button>
+        <button class="tab-btn" id="btn-numworks" onclick="abrirPagina('numworks', 'calc')">NumWorks</button>
+    </nav>
+
+    <!-- MENU 2: SEPARADORES POR MEDIDA -->
+    <nav class="tabs-bar hidden" id="nav-med">
+        <button class="tab-btn" id="btn-media" onclick="abrirPagina('media', 'med')">1. Média (x̄)</button>
+        <button class="tab-btn" id="btn-moda" onclick="abrirPagina('moda', 'med')">2. Moda (Mₒ)</button>
+        <button class="tab-btn" id="btn-mediana" onclick="abrirPagina('mediana', 'med')">3. Mediana (Mₑ)</button>
+        <button class="tab-btn" id="btn-quartis" onclick="abrirPagina('quartis', 'med')">4. Quartis & Percentis</button>
+        <button class="tab-btn" id="btn-boxplot" onclick="abrirPagina('boxplot', 'med')">5. Boxplot</button>
+        <button class="tab-btn" id="btn-dispersao" onclick="abrirPagina('dispersao', 'med')">6. Dispersão (s, Amp.)</button>
+    </nav>
+
+    <!-- =========================================================================
+         SECÇÃO A: PÁGINAS POR CALCULADORA
+    ========================================================================== -->
+
+    <!-- 1. CASIO fx-CG50 -->
+    <div id="page-casio" class="page active">
+        <div class="card">
+            <div class="card-header">
+                <div>
+                    <span class="tag tag-cyan">Modelo Oficial do Manual (Págs. 47–49, 53, 64)</span>
+                    <h2 style="color:white; font-size:20px;">CASIO fx-CG50</h2>
+                </div>
+                <div style="font-size:13px; color:#94a3b8;">Menu: <span class="kbd kbd-blue">2: Statistics</span></div>
+            </div>
+
+            <div class="step-grid">
+                <div>
+                    <h3 style="color:#22d3ee;"><span class="num-badge" style="background:#0891b2;">1</span> Introduzir os Dados (3 Formas Possíveis)</h3>
+                    <ol>
+                        <li>Prime <span class="kbd">MENU</span> → <strong>2: Statistics</strong>.</li>
+                        <li><strong>Caso A — Lista Simples (pág. 47):</strong> Escreve todos os valores na <strong>List 1</strong> (mesmo que repetidos).</li>
+                        <li><strong>Caso B — Tabela de Frequências (pág. 48):</strong> Escreve os valores na <strong>List 1</strong> e as frequências absolutas (<em>n<sub>i</sub></em>) na <strong>List 2</strong>.</li>
+                        <li><strong>Caso C — Dados em Classes (pág. 49):</strong> Calcula a <strong>marca da classe</strong> (ponto médio do intervalo), coloca na <strong>List 1</strong> e as frequências na <strong>List 2</strong>.</li>
+                    </ol>
+                </div>
+                <div class="svg-wrap">
+                    <svg width="300" height="175" viewBox="0 0 300 175" style="background:#f1f5f9;">
+                        <rect x="0" y="0" width="300" height="22" fill="#1e3a8a"/>
+                        <text x="10" y="15" fill="white" font-family="monospace" font-size="11" font-weight="bold">Statistics (Ex. pág. 49)</text>
+                        <rect x="0" y="22" width="300" height="20" fill="#cbd5e1"/>
+                        <text x="20" y="36" fill="#0f172a" font-family="monospace" font-size="11" font-weight="bold">List 1(xi)</text>
+                        <text x="110" y="36" fill="#0f172a" font-family="monospace" font-size="11" font-weight="bold">List 2(ni)</text>
+                        <text x="205" y="36" fill="#64748b" font-family="monospace" font-size="11">List 3</text>
+                        <line x1="98" y1="22" x2="98" y2="152" stroke="#94a3b8"/>
+                        <line x1="190" y1="22" x2="190" y2="152" stroke="#94a3b8"/>
+                        <text x="45" y="56" fill="#0f172a" font-family="monospace" font-size="11" font-weight="bold">20</text>
+                        <text x="135" y="56" fill="#0284c7" font-family="monospace" font-size="11" font-weight="bold">26</text>
+                        <text x="45" y="76" fill="#0f172a" font-family="monospace" font-size="11" font-weight="bold">40</text>
+                        <text x="135" y="76" fill="#0284c7" font-family="monospace" font-size="11" font-weight="bold">30</text>
+                        <text x="45" y="96" fill="#0f172a" font-family="monospace" font-size="11" font-weight="bold">60</text>
+                        <text x="135" y="96" fill="#0284c7" font-family="monospace" font-size="11" font-weight="bold">32</text>
+                        <text x="45" y="116" fill="#0f172a" font-family="monospace" font-size="11" font-weight="bold">80</text>
+                        <text x="135" y="116" fill="#0284c7" font-family="monospace" font-size="11" font-weight="bold">12</text>
+                        <rect x="0" y="152" width="300" height="23" fill="#0f172a"/>
+                        <rect x="3" y="155" width="45" height="17" rx="2" fill="#334155"/>
+                        <text x="10" y="167" fill="#38bdf8" font-family="monospace" font-size="10" font-weight="bold">GRAPH</text>
+                        <rect x="52" y="155" width="45" height="17" rx="2" fill="#0284c7"/>
+                        <text x="61" y="167" fill="white" font-family="monospace" font-size="10" font-weight="bold">CALC</text>
+                    </svg>
+                </div>
+            </div>
+
+            <div class="step-grid">
+                <div>
+                    <h3 style="color:#22d3ee;"><span class="num-badge" style="background:#0891b2;">2</span> Configurar (SET) e Calcular (1-VAR)</h3>
+                    <ol>
+                        <li>Prime <span class="kbd kbd-blue">CALC</span> (<span class="kbd">F2</span>) → <span class="kbd">SET</span> (<span class="kbd">F6</span>).</li>
+                        <li>Configura a frequência conforme como inseriste os dados:
+                            <ul>
+                                <li><strong>1Var XList:</strong> <span style="color:white; font-weight:bold;">List1</span></li>
+                                <li><strong>1Var Freq:</strong> <span style="color:#34d399; font-weight:bold;">1</span> (se usaste só List 1) OU <span style="color:#38bdf8; font-weight:bold;">List2</span> (se tens frequências na List 2).</li>
+                            </ul>
+                        </li>
+                        <li>Prime <span class="kbd">EXIT</span> → <span class="kbd kbd-blue">1-VAR</span> (<span class="kbd">F1</span>).</li>
+                        <li>Usa <span class="kbd">↑</span> <span class="kbd">↓</span> para ler: <strong>x̄</strong>, <strong>sx</strong>, <strong>minX</strong>, <strong>Q1</strong>, <strong>Med</strong>, <strong>Q3</strong>, <strong>maxX</strong> e <strong>Mod</strong>.</li>
+                    </ol>
+                </div>
+                <div class="svg-wrap">
+                    <svg width="300" height="185" viewBox="0 0 300 185" style="background:#f1f5f9;">
+                        <rect x="0" y="0" width="300" height="22" fill="#1e3a8a"/>
+                        <text x="10" y="15" fill="white" font-family="monospace" font-size="11" font-weight="bold">1-Variable</text>
+                        <text x="15" y="40" fill="#0f172a" font-family="monospace" font-size="11">x̄      = 46</text>
+                        <text x="195" y="40" fill="#0284c7" font-family="monospace" font-size="10" font-weight="bold">← Média</text>
+                        <text x="15" y="58" fill="#0f172a" font-family="monospace" font-size="11">sx     = 19.69</text>
+                        <text x="195" y="58" fill="#059669" font-family="monospace" font-size="10" font-weight="bold">← Desv.Padrão</text>
+                        <text x="15" y="76" fill="#64748b" font-family="monospace" font-size="11">n      = 100</text>
+                        <line x1="10" y1="84" x2="290" y2="84" stroke="#cbd5e1" stroke-dasharray="3"/>
+                        <text x="15" y="100" fill="#0f172a" font-family="monospace" font-size="11">minX   = 20</text>
+                        <text x="15" y="117" fill="#d97706" font-family="monospace" font-size="11" font-weight="bold">Q1     = 20</text>
+                        <text x="15" y="134" fill="#dc2626" font-family="monospace" font-size="11" font-weight="bold">Med    = 40</text>
+                        <text x="195" y="134" fill="#dc2626" font-family="monospace" font-size="10" font-weight="bold">← Mediana</text>
+                        <text x="15" y="151" fill="#d97706" font-family="monospace" font-size="11" font-weight="bold">Q3     = 60</text>
+                        <text x="15" y="168" fill="#0f172a" font-family="monospace" font-size="11">maxX   = 80   | Mod = 60</text>
+                    </svg>
+                </div>
+            </div>
+
+            <div class="step-full" style="margin-bottom:0;">
+                <h3 style="color:#22d3ee;"><span class="num-badge" style="background:#0891b2;">3</span> Diagrama de Extremos e Quartis (MedBox)</h3>
+                <ol>
+                    <li>No ecrã das listas, prime <span class="kbd kbd-blue">GRAPH</span> (<span class="kbd">F1</span>) → <span class="kbd">SET</span> (<span class="kbd">F6</span>).</li>
+                    <li>Muda <strong>Graph Type</strong> para <span style="color:#67e8f9; font-weight:bold;">MedBox</span>, <strong>XList: List1</strong>, <strong>Frequency: 1</strong> (ou <strong>List2</strong>) e <strong>Outliers: Off</strong>.</li>
+                    <li>Prime <span class="kbd">EXIT</span> → <span class="kbd kbd-blue">GRAPH1</span> (<span class="kbd">F1</span>) → <span class="kbd">SHIFT</span>+<span class="kbd">F1</span> (<strong>Trace</strong>) para percorrer os 5 pontos.</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. TI-84 PLUS C -->
+    <div id="page-ti84" class="page">
+        <div class="card">
+            <div class="card-header">
+                <div>
+                    <span class="tag tag-amber">Texas Instruments</span>
+                    <h2 style="color:white; font-size:20px;">TI-84 Plus / TI-84 Plus CE</h2>
+                </div>
+                <div style="font-size:13px; color:#94a3b8;">Tecla: <span class="kbd">STAT</span></div>
+            </div>
+
+            <div class="step-grid">
+                <div>
+                    <h3 style="color:#fbbf24;"><span class="num-badge" style="background:#d97706;">1</span> Introduzir Dados (L1 e L2)</h3>
+                    <ol>
+                        <li>Prime <span class="kbd">STAT</span> → <span class="kbd">1: Edit...</span></li>
+                        <li><strong>Dados simples:</strong> Escreve tudo em <strong>L1</strong>.</li>
+                        <li><strong>Tabela ou Classes:</strong> Escreve valores (ou marcas de classe) em <strong>L1</strong> e frequências em <strong>L2</strong>.</li>
+                    </ol>
+                </div>
+                <div class="svg-wrap">
+                    <svg width="300" height="150" viewBox="0 0 300 150" style="background:#020617;">
+                        <rect x="0" y="0" width="300" height="22" fill="#334155"/>
+                        <text x="10" y="15" fill="#f8fafc" font-family="monospace" font-size="11">TI-84 STAT EDIT</text>
+                        <text x="40" y="42" fill="#38bdf8" font-family="monospace" font-size="12" font-weight="bold">L1</text>
+                        <text x="130" y="42" fill="#38bdf8" font-family="monospace" font-size="12" font-weight="bold">L2</text>
+                        <line x1="15" y1="48" x2="285" y2="48" stroke="#475569"/>
+                        <text x="40" y="68" fill="white" font-family="monospace" font-size="12">20</text>
+                        <text x="130" y="68" fill="#fbbf24" font-family="monospace" font-size="12">26</text>
+                        <text x="40" y="88" fill="white" font-family="monospace" font-size="12">40</text>
+                        <text x="130" y="88" fill="#fbbf24" font-family="monospace" font-size="12">30</text>
+                        <text x="40" y="108" fill="white" font-family="monospace" font-size="12">60</text>
+                        <text x="130" y="108" fill="#fbbf24" font-family="monospace" font-size="12">32</text>
+                    </svg>
+                </div>
+            </div>
+
+            <div class="step-full" style="margin-bottom:0;">
+                <h3 style="color:#fbbf24;"><span class="num-badge" style="background:#d97706;">2</span> Calcular Medidas e Boxplot</h3>
+                <ol>
+                    <li><strong>Medidas:</strong> Prime <span class="kbd">STAT</span> → seta <span class="kbd">→</span> (<strong>CALC</strong>) → <span class="kbd">1: 1-Var Stats</span>. Define <strong>List: L1</strong> e <strong>FreqList:</strong> vazio (ou <strong>L2</strong> via <span class="kbd kbd-blue">2nd</span>+<span class="kbd">2</span>) → <strong>Calculate</strong>.</li>
+                    <li><strong>Boxplot:</strong> Prime <span class="kbd kbd-blue">2nd</span>+<span class="kbd">Y=</span> (<strong>STAT PLOT</strong>) → <span class="kbd">1: Plot1</span> → <strong>On</strong> → escolhe o 5.º ícone (sem outliers) → <strong>Xlist: L1</strong>, <strong>Freq: 1</strong> (ou <strong>L2</strong>) → <span class="kbd">ZOOM</span> + <span class="kbd">9</span>.</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. TI-NSPIRE CX -->
+    <div id="page-nspire" class="page">
+        <div class="card">
+            <div class="card-header">
+                <div>
+                    <span class="tag tag-rose">Texas Instruments</span>
+                    <h2 style="color:white; font-size:20px;">TI-Nspire CX / CX II-T</h2>
+                </div>
+                <div style="font-size:13px; color:#94a3b8;">App: <span class="kbd">Listas e Folha de Cálculo</span></div>
+            </div>
+
+            <div class="step-full" style="margin-bottom:0;">
+                <h3 style="color:#fb7185;"><span class="num-badge" style="background:#e11d48;">1</span> Folha de Cálculo, Estatísticas e Boxplot</h3>
+                <ol>
+                    <li>Abre <strong>Listas e Folha de Cálculo</strong>. Dá nome à coluna A (<code style="color:#fda4af;">dados</code>) e preenche valores (ou marcas de classe). Se houver frequências, dá nome à coluna B (<code style="color:#fda4af;">freq</code>).</li>
+                    <li><strong>Calcular Medidas:</strong> Prime <span class="kbd">MENU</span> → <span class="kbd">4: Estatística</span> → <span class="kbd">1: Cálculos Estatísticos</span> → <span class="kbd">1: Estatística de uma variável</span>. Escolhe <strong>Lista X1: dados</strong> e <strong>Frequências: 1</strong> (ou <strong>freq</strong>).</li>
+                    <li><strong>Boxplot:</strong> Prime <span class="kbd">CTRL</span>+<span class="kbd">I</span> → <strong>Dados e Estatística</strong> → clica em baixo para escolher <code style="color:#fda4af;">dados</code> → <span class="kbd">MENU</span> → <span class="kbd">1: Tipo de Gráfico</span> → <span class="kbd">2: Diagrama de Extremos e Quartis</span>.</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. NUMWORKS -->
+    <div id="page-numworks" class="page">
+        <div class="card">
+            <div class="card-header">
+                <div>
+                    <span class="tag tag-orange">Interface Moderna</span>
+                    <h2 style="color:white; font-size:20px;">NumWorks</h2>
+                </div>
+                <div style="font-size:13px; color:#94a3b8;">App: <span class="kbd kbd-yellow">Estatística</span></div>
+            </div>
+
+            <div class="step-full" style="margin-bottom:0;">
+                <h3 style="color:#fb923c;"><span class="num-badge" style="background:#ea580c;">1</span> Três Separadores Diretos</h3>
+                <ol>
+                    <li>Abre a aplicação <strong>Estatística</strong>.</li>
+                    <li>Separador <strong>Dados:</strong> Preenche <strong>Valor V1</strong> (dados ou marcas de classe) e <strong>Frequência N1</strong> (por defeito fica 1).</li>
+                    <li>Separador <strong>Gráfico:</strong> Escolhe <strong>Diagrama de extremos e quartis</strong> e usa as setas para ler os 5 pontos.</li>
+                    <li>Separador <strong>Estatísticas:</strong> Lê diretamente <strong>Média</strong>, <strong>Desvio-padrão (s)</strong>, <strong>Variância (s²)</strong>, <strong>Quartis (Q1, Q3)</strong>, <strong>Mediana</strong>, <strong>Amplitude</strong> e <strong>Moda</strong>.</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- =========================================================================
+         SECÇÃO B: PÁGINAS POR MEDIDA ESTATÍSTICA
+    ========================================================================== -->
+
+    <!-- MEDIDA 1: MÉDIA (COM OS 3 CASOS DO MANUAL PÁGS. 47, 48, 49) -->
+    <div id="page-media" class="page">
+        <div class="card">
+            <div class="card-header">
+                <div>
+                    <span class="tag tag-purple">Medida de Localização • Págs. 47, 48 e 49 do Manual</span>
+                    <h2 style="color:white; font-size:20px;">1. Como Calcular a Média (x̄)</h2>
+                </div>
+                <div style="font-size:13px; color:#ddd6fe;">Símbolo no ecrã: <strong>x̄</strong> (ou <em>Média μ</em> na NumWorks)</div>
+            </div>
+
+            <p style="font-size:13px; color:#cbd5e1; margin-bottom:16px;">
+                Consoante a forma como o exercício te dá os dados, existem <strong>3 maneiras</strong> de os introduzir na calculadora (exemplos baseados nas páginas 47, 48 e 49 do manual):
+            </p>
+
+            <!-- OS 3 CASOS LADO A LADO -->
+            <div class="cases-3">
+                <!-- CASO 1: DADOS À MÃO (PÁG. 47) -->
+                <div class="case-box">
+                    <span class="tag tag-cyan">Caso 1 • Pág. 47</span>
+                    <h4 style="color:white; margin:6px 0;">Dados Soltos à Mão (Lista Simples)</h4>
+                    <p style="font-size:12px; color:#94a3b8; margin-bottom:8px;">
+                        Quando tens uma lista pequena de números (mesmo que haja valores repetidos, ex.: <code>24, 25, 29, 25</code>):
+                    </p>
+                    <ol style="font-size:12px;">
+                        <li>Coloca <strong>todos os números</strong> na 1.ª coluna (<strong>List 1 / L1 / V1</strong>), um por linha, incluindo os repetidos.</li>
+                        <li>Define a Frequência como <strong>1</strong> (ou deixa <code>FreqList</code> em branco na TI-84).</li>
+                        <li>Executa <strong>1-VAR</strong> e lê o valor de <strong>x̄</strong>.</li>
+                    </ol>
+                </div>
+
+                <!-- CASO 2: TABELA DE FREQUÊNCIAS (PÁG. 48) -->
+                <div class="case-box amber">
+                    <span class="tag tag-amber">Caso 2 • Pág. 48</span>
+                    <h4 style="color:white; margin:6px 0;">Tabela (Dado + Frequência)</h4>
+                    <p style="font-size:12px; color:#94a3b8; margin-bottom:8px;">
+                        Quando os dados estão agrupados numa tabela de frequências (ex.: N.º de golos e n.º de jogos):
+                    </p>
+                    <ol style="font-size:12px;">
+                        <li>Na 1.ª coluna (<strong>List 1 / L1 / V1</strong>), escreve os valores da variável (<em>x<sub>i</sub></em>).</li>
+                        <li>Na 2.ª coluna (<strong>List 2 / L2 / N1</strong>), escreve as respetivas <strong>frequências absolutas</strong> (<em>n<sub>i</sub></em>).</li>
+                        <li>Em <strong>SET / FreqList</strong>, muda a frequência de <code>1</code> para <strong>List 2 / L2</strong>!</li>
+                        <li>Executa <strong>1-VAR</strong> e lê <strong>x̄</strong>.</li>
+                    </ol>
+                </div>
+
+                <!-- CASO 3: DADOS EM CLASSES (PÁG. 49) -->
+                <div class="case-box emerald">
+                    <span class="tag tag-cyan" style="background:#064e3b; color:#6ee7b7; border-color:#059669;">Caso 3 • Pág. 49</span>
+                    <h4 style="color:white; margin:6px 0;">Classes (Usar a Marca da Classe)</h4>
+                    <p style="font-size:12px; color:#94a3b8; margin-bottom:8px;">
+                        A calculadora não aceita intervalos como <code>[10, 30[</code>. Tens de calcular primeiro o ponto médio:
+                    </p>
+                    <div style="background:#1e293b; padding:6px 10px; border-radius:6px; font-family:monospace; font-size:12px; color:#6ee7b7; margin-bottom:8px; text-align:center;">
+                        Marca da Classe = (Início + Fim) ÷ 2<br>
+                        Ex.: [10, 30[ → (10 + 30) ÷ 2 = 20
+                    </div>
+                    <ol style="font-size:12px;">
+                        <li>Escreve as <strong>Marcas das Classes</strong> na <strong>List 1 / L1 / V1</strong>.</li>
+                        <li>Escreve as <strong>Frequências Absolutas</strong> na <strong>List 2 / L2 / N1</strong>.</li>
+                        <li>Define <strong>Freq = List 2 / L2</strong> e executa <strong>1-VAR</strong> para obter a média aproximada <strong>x̄</strong>.</li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="alert-box">
+                ⚠️ <strong>Erro mais comum nos testes:</strong> Fazer um exercício do Caso 2 ou 3 (com tabela na List 2) e esquecer de mudar o <code>Freq</code> de <strong>1</strong> para <strong>List 2</strong> (ou vice-versa, fazer uma lista simples e deixar lá esquecida uma <code>List 2</code> antiga!). Confirma sempre o <strong>n</strong> (total de dados) no ecrã de resultados!
+            </div>
+        </div>
+    </div>
+
+    <!-- MEDIDA 2: MODA -->
+    <div id="page-moda" class="page">
+        <div class="card">
+            <div class="card-header">
+                <div>
+                    <span class="tag tag-purple">Medida de Localização • Págs. 50–51</span>
+                    <h2 style="color:white; font-size:20px;">2. Como Obter a Moda (Mₒ)</h2>
+                </div>
+                <div style="font-size:13px; color:#ddd6fe;">Valor ou categoria que ocorre mais vezes</div>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Calculadora</th>
+                        <th>Como obter a Moda</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="color:#22d3ee; font-weight:bold;">CASIO fx-CG50</td>
+                        <td>No menu <strong>1-VAR</strong>, desce com a seta <span class="kbd">↓</span> até ao fundo da lista: aparece <strong>Mod = ...</strong> (e <code>Mod:n</code> indica se há mais do que uma moda).</td>
+                    </tr>
+                    <tr>
+                        <td style="color:#fbbf24; font-weight:bold;">TI-84 Plus C</td>
+                        <td><strong>Não calcula diretamente.</strong> Ordena a lista (<span class="kbd">STAT</span> → <span class="kbd">2: SortA(L1)</span>) ou vê qual o valor com maior frequência na coluna <strong>L2</strong>.</td>
+                    </tr>
+                    <tr>
+                        <td style="color:#fb7185; font-weight:bold;">TI-Nspire CX</td>
+                        <td><strong>Não aparece no 1-VAR.</strong> Podes ordenar a coluna ou escrever numa página de Calculadora: <code class="mono">mode(dados)</code>.</td>
+                    </tr>
+                    <tr>
+                        <td style="color:#fb923c; font-weight:bold;">NumWorks</td>
+                        <td>Aparece diretamente no separador <strong>Estatísticas</strong> com o nome <strong>Moda</strong>.</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="alert-box">
+                💡 <strong>Nota sobre Classes:</strong> Se os dados estiverem agrupados em intervalos (histograma), não se diz "Moda", diz-se <strong>Classe Modal</strong> (o intervalo com maior frequência absoluta).
+            </div>
+        </div>
+    </div>
+
+    <!-- MEDIDA 3: MEDIANA -->
+    <div id="page-mediana" class="page">
+        <div class="card">
+            <div class="card-header">
+                <div>
+                    <span class="tag tag-purple">Medida de Localização • Págs. 52–53</span>
+                    <h2 style="color:white; font-size:20px;">3. Como Obter a Mediana (Mₑ)</h2>
+                </div>
+                <div style="font-size:13px; color:#ddd6fe;">Divide os dados ordenados ao meio (50% / 50%)</div>
+            </div>
+
+            <ol>
+                <li>Introduz os dados na 1.ª coluna (e as frequências na 2.ª coluna, se existirem).</li>
+                <li>Executa o cálculo estatístico de 1 variável:
+                    <ul>
+                        <li><strong>CASIO fx-CG50:</strong> <span class="kbd">CALC</span> → <span class="kbd">1-VAR</span> → desce com <span class="kbd">↓</span> até ler <strong>Med</strong>.</li>
+                        <li><strong>TI-84 Plus C:</strong> <span class="kbd">STAT</span> → <span class="kbd">CALC</span> → <span class="kbd">1-Var Stats</span> → desce com <span class="kbd">↓</span> até ler <strong>Med</strong>.</li>
+                        <li><strong>TI-Nspire CX:</strong> <span class="kbd">MENU</span> → <span class="kbd">4: Estatística</span> → <span class="kbd">1: Cálculos Estatísticos</span> → <span class="kbd">1-Var</span> → lê <strong>MedianX</strong>.</li>
+                        <li><strong>NumWorks:</strong> Separador <strong>Estatísticas</strong> → lê <strong>Mediana</strong>.</li>
+                    </ul>
+                </li>
+            </ol>
+            <div class="alert-box">
+                📌 <strong>Quando preferir a Mediana à Média?</strong> Sempre que existirem <strong>outliers</strong> (valores muito discrepantes/extremos, como no exemplo do teatro da pág. 46 do manual), pois a mediana não é afetada por valores extremos!
+            </div>
+        </div>
+    </div>
+
+    <!-- MEDIDA 4: QUARTIS E PERCENTIS -->
+    <div id="page-quartis" class="page">
+        <div class="card">
+            <div class="card-header">
+                <div>
+                    <span class="tag tag-purple">Medidas de Localização • Págs. 61–64</span>
+                    <h2 style="color:white; font-size:20px;">4. Quartis (Q₁, Q₂, Q₃) e Percentis (Pₖ)</h2>
+                </div>
+                <div style="font-size:13px; color:#ddd6fe;">Dividem os dados em blocos de 25%</div>
+            </div>
+
+            <div class="step-full">
+                <h3 style="color:#a78bfa;">Leitura Direta dos Quartis no Ecrã (1-VAR)</h3>
+                <p style="font-size:13px; color:#cbd5e1; margin-bottom:10px;">
+                    Em todas as calculadoras, logo a seguir ao cálculo de 1 variável (usando as setas <span class="kbd">↓</span>), aparecem os três quartis por ordem:
+                </p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Medida</th>
+                            <th>Sigla no Ecrã</th>
+                            <th>Percentil Equivalente</th>
+                            <th>Significado Prático</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>1.º Quartil</strong></td>
+                            <td class="mono" style="color:#fbbf24;">Q1</td>
+                            <td class="mono">P₂₅</td>
+                            <td>Pelo menos 25% dos dados são ≤ Q₁.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>2.º Quartil (Mediana)</strong></td>
+                            <td class="mono" style="color:#f87171;">Med / MedianX</td>
+                            <td class="mono">P₅₀</td>
+                            <td>Pelo menos 50% dos dados são ≤ Mediana.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>3.º Quartil</strong></td>
+                            <td class="mono" style="color:#fbbf24;">Q3</td>
+                            <td class="mono">P₇₅</td>
+                            <td>Pelo menos 75% dos dados são ≤ Q₃.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="alert-box">
+                🔍 <strong>E os outros Percentis (ex.: P₁₀, P₈₅)?</strong> As calculadoras gráficas não calculam percentis arbitrários diretamente no menu 1-VAR. Para os encontrar, olha para a coluna da <strong>Frequência Relativa Acumulada (Fᵢ%)</strong> da tabela e vê qual o primeiro valor que iguala ou ultrapassa a percentagem pedida.
+            </div>
+        </div>
+    </div>
+
+    <!-- MEDIDA 5: DIAGRAMA DE EXTREMOS E QUARTIS (BOXPLOT) -->
+    <div id="page-boxplot" class="page">
+        <div class="card">
+            <div class="card-header">
+                <div>
+                    <span class="tag tag-purple">Representação Gráfica • Págs. 64–65</span>
+                    <h2 style="color:white; font-size:20px;">5. Diagrama de Extremos e Quartis (Boxplot)</h2>
+                </div>
+                <div style="font-size:13px; color:#ddd6fe;">"Caixa de Bigodes" (5 pontos)</div>
+            </div>
+
+            <div class="step-grid">
+                <div>
+                    <h3 style="color:#a78bfa;">Atalhos Rápidos por Máquina</h3>
+                    <ul>
+                        <li><strong>CASIO fx-CG50:</strong> <span class="kbd">GRAPH</span> → <span class="kbd">SET</span> → <code>Graph Type: MedBox</code>, <code>Outliers: Off</code> → <span class="kbd">EXIT</span> → <span class="kbd">GRAPH1</span> → <span class="kbd">SHIFT</span>+<span class="kbd">F1</span> (<strong>Trace</strong>).</li>
+                        <li><strong>TI-84 Plus C:</strong> <span class="kbd">2nd</span>+<span class="kbd">Y=</span> → <code>Plot1: On</code> → 5.º ícone (sem outliers) → <span class="kbd">ZOOM</span> + <span class="kbd">9</span> → <span class="kbd">TRACE</span>.</li>
+                        <li><strong>TI-Nspire CX:</strong> <span class="kbd">CTRL</span>+<span class="kbd">I</span> → <em>Dados e Estatística</em> → escolher variável → <span class="kbd">MENU</span> → <code>Tipo de Gráfico</code> → <code>Diagrama de Extremos e Quartis</code>.</li>
+                        <li><strong>NumWorks:</strong> Separador <strong>Gráfico</strong> → <em>Diagrama de extremos e quartis</em>.</li>
+                    </ul>
+                </div>
+                <div class="svg-wrap">
+                    <svg width="310" height="160" viewBox="0 0 310 160" style="background:#f8fafc;">
+                        <line x1="35" y1="70" x2="95" y2="70" stroke="#0f172a" stroke-width="2.5"/>
+                        <line x1="35" y1="55" x2="35" y2="85" stroke="#0f172a" stroke-width="2.5"/>
+                        <rect x="95" y="45" width="120" height="50" fill="#ddd6fe" stroke="#7c3aed" stroke-width="2.5"/>
+                        <line x1="150" y1="45" x2="150" y2="95" stroke="#dc2626" stroke-width="3"/>
+                        <line x1="215" y1="70" x2="275" y2="70" stroke="#0f172a" stroke-width="2.5"/>
+                        <line x1="275" y1="55" x2="275" y2="85" stroke="#0f172a" stroke-width="2.5"/>
+                        <text x="55" y="36" fill="#475569" font-family="sans-serif" font-size="10" font-weight="bold">25%</text>
+                        <text x="113" y="36" fill="#6d28d9" font-family="sans-serif" font-size="10" font-weight="bold">25%</text>
+                        <text x="172" y="36" fill="#6d28d9" font-family="sans-serif" font-size="10" font-weight="bold">25%</text>
+                        <text x="235" y="36" fill="#475569" font-family="sans-serif" font-size="10" font-weight="bold">25%</text>
+                        <text x="22" y="112" fill="#0f172a" font-family="monospace" font-size="11" font-weight="bold">Mín</text>
+                        <text x="88" y="112" fill="#7c3aed" font-family="monospace" font-size="11" font-weight="bold">Q1</text>
+                        <text x="140" y="112" fill="#dc2626" font-family="monospace" font-size="11" font-weight="bold">Med</text>
+                        <text x="208" y="112" fill="#7c3aed" font-family="monospace" font-size="11" font-weight="bold">Q3</text>
+                        <text x="263" y="112" fill="#0f172a" font-family="monospace" font-size="11" font-weight="bold">Máx</text>
+                        <text x="35" y="140" fill="#334155" font-family="sans-serif" font-size="10">Zona mais curta = mais concentrada | Mais longa = mais dispersa</text>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MEDIDA 6: DISPERSÃO -->
+    <div id="page-dispersao" class="page">
+        <div class="card">
+            <div class="card-header">
+                <div>
+                    <span class="tag tag-purple">Medidas de Dispersão</span>
+                    <h2 style="color:white; font-size:20px;">6. Medidas de Dispersão (Variabilidade)</h2>
+                </div>
+                <div style="font-size:13px; color:#ddd6fe;">Medem o quanto os dados estão espalhados</div>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Medida de Dispersão</th>
+                        <th>Como obter na Calculadora</th>
+                        <th>Nota Prática</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Desvio-Padrão Amostral (<em>s</em>)</strong></td>
+                        <td>Lê diretamente no menu <strong>1-VAR</strong>:<br>
+                        • CASIO / Nspire: <strong style="color:#34d399;">sx</strong><br>
+                        • TI-84: <strong style="color:#34d399;">Sx</strong><br>
+                        • NumWorks: <strong style="color:#34d399;">s</strong></td>
+                        <td>Usa <strong>sempre este</strong> (ignora o <code>σx</code>, a menos que o exercício diga que é a população toda).</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Variância (<em>s</em>²)</strong></td>
+                        <td>Eleva o desvio-padrão ao quadrado: <strong>(sx)²</strong><br>(A NumWorks mostra logo <code>s²</code>).</td>
+                        <td>Quanto maior for, mais afastados da média estão os dados.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Amplitude Total</strong></td>
+                        <td>Calcula à mão com os extremos do ecrã:<br><strong>maxX − minX</strong></td>
+                        <td>Diferença entre o valor maior e o menor.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Amplitude Interquartil</strong></td>
+                        <td>Calcula à mão com os quartis do ecrã:<br><strong>Q3 − Q1</strong></td>
+                        <td>Mede a largura da "caixa" (os 50% centrais dos dados).</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    function mudarModo(modo) {
+        var btnCalc = document.getElementById('mode-btn-calc');
+        var btnMed = document.getElementById('mode-btn-med');
+        var navCalc = document.getElementById('nav-calc');
+        var navMed = document.getElementById('nav-med');
+
+        if (modo === 'calc') {
+            btnCalc.classList.add('active');
+            btnMed.classList.remove('active');
+            navCalc.classList.remove('hidden');
+            navMed.classList.add('hidden');
+            abrirPagina('casio', 'calc');
+        } else {
+            btnMed.classList.add('active');
+            btnCalc.classList.remove('active');
+            navMed.classList.remove('hidden');
+            navCalc.classList.add('hidden');
+            abrirPagina('media', 'med');
+        }
+    }
+
+    function abrirPagina(id, modo) {
+        var paginas = document.getElementsByClassName('page');
+        for (var i = 0; i < paginas.length; i++) {
+            paginas[i].classList.remove('active');
+        }
+
+        var botoes = document.getElementsByClassName('tab-btn');
+        for (var j = 0; j < botoes.length; j++) {
+            botoes[j].classList.remove('active-cyan');
+            botoes[j].classList.remove('active-purple');
+        }
+
+        document.getElementById('page-' + id).classList.add('active');
+        var activeBtn = document.getElementById('btn-' + id);
+        if (modo === 'calc') {
+            activeBtn.classList.add('active-cyan');
+        } else {
+            activeBtn.classList.add('active-purple');
+        }
+    }
+</script>
+
+</body>
+</html>
